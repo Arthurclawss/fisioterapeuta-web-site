@@ -134,9 +134,10 @@ export default function Home() {
             .fromTo('.patient-kicker, .testimonial-column>h2, .patient-intro', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.045 }, 0)
             .fromTo('.testimonial-card, .testimonial-note', { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.04 }, 0.12)
             .fromTo('.faq-column', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55 }, 0.08);
-          gsap.fromTo('.closing-backdrop', { yPercent: -8, scale: 1.05 }, {
-            yPercent: 0, scale: 1, ease: 'none',
-            scrollTrigger: { id: 'closing-reveal', trigger: '.patient-stage', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, scrub: true, invalidateOnRefresh: true },
+          // Reveal the contact scene as a stationary surface. Transforming its
+          // background exposed a dark strip below it during the curtain reveal.
+          ScrollTrigger.create({
+            id: 'closing-reveal', trigger: '.patient-stage', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, invalidateOnRefresh: true,
           });
         });
       });

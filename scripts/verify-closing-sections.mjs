@@ -37,6 +37,19 @@ try {
   assert.equal(await page.locator('.patient-intro').evaluate(el => getComputedStyle(el).color), 'rgb(209, 225, 231)');
   await page.screenshot({ path: 'artifacts/patients-faq-desktop.png' });
   const revealStart = bounds.top + bounds.height - 900;
+  const watermarkWidth = await page.locator('.closing-watermark').evaluate(el => el.getBoundingClientRect().width);
+  for (const progress of [0.1, 0.5, 0.9]) {
+    await page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), revealStart + 900 * progress);
+    await page.waitForTimeout(400);
+    const background = await page.locator('.closing-backdrop').evaluate(el => {
+      const rect = el.getBoundingClientRect();
+      const scene = el.parentElement.getBoundingClientRect();
+      return { transform: getComputedStyle(el).transform, topGap: rect.top - scene.top, bottomGap: scene.bottom - rect.bottom };
+    });
+    assert.equal(background.transform, 'none', 'Contact background must keep its final scale throughout reveal');
+    assert.ok(Math.abs(background.topGap) < 1 && Math.abs(background.bottomGap) < 1, 'Background must cover the entire scene without dark gaps');
+    assert.ok(Math.abs(await page.locator('.closing-watermark').evaluate(el => el.getBoundingClientRect().width) - watermarkWidth) < 1, 'Logo must retain its size throughout reveal');
+  }
   await page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), revealStart + 450);
   await page.waitForTimeout(1200);
   const sceneTop = await page.locator('.closing-scene').evaluate(el => el.getBoundingClientRect().top);
