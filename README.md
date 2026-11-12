@@ -23,6 +23,12 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Conteúdo e imagens
 
+As seções 05 e 06 incluem depoimentos ilustrativos (fictícios, identificados na interface), perguntas frequentes em acordeão, mapa do Google sob demanda, endereço, Instagram, contato e rodapé. A seção 05 sobe sobre a cena de contato fixa, revelando-a por baixo no desktop; em celular, telas baixas e movimento reduzido, ambas seguem o fluxo normal.
+
+Os dados ficam em `app/data/site-content.js`. O endereço e Instagram foram fornecidos pelo proprietário. O e-mail foi conferido no [perfil público do Rudy](https://linktr.ee/Dr.rudymollick). O WhatsApp permanece deliberadamente sem número roteável: o botão abre um aviso com o Instagram oficial. Para ativá-lo, preencha `contact.whatsapp` com o número real no formato internacional. Horários, registro profissional, duração e pagamento ainda dependem de confirmação; não foram inventados. Substitua os relatos ilustrativos por depoimentos reais autorizados antes de usá-los como prova social.
+
+O mapa usa Google Maps Embed por endereço, sem chave de API, e só carrega após a escolha do visitante. A política de privacidade fica em `/privacidade` e descreve o comportamento desta versão, incluindo dados demonstrativos e serviços externos.
+
 O logo aparece ampliado como marca-d’água no fundo da cena principal, com opacidade de 8,5% e parallax discreto. É decorativo, fica atrás da foto e dos textos, e não intercepta cliques.
 
 Os PNGs com transparência estão em `public/images`. Foram preparados com edição por IA a partir dos arquivos enviados; revisar detalhes de marca e rosto antes de publicar.

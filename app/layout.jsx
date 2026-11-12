@@ -1,4 +1,5 @@
 import './globals.css';
+import './closing.css';
 
 export const metadata = {
   title: 'Rudy Mollick | Liberdade para se movimentar',

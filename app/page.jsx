@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SpotlightCard from './components/SpotlightCard';
+import ClosingSections from './components/ClosingSections';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -108,6 +109,12 @@ export default function Home() {
         });
         gsap.from('.treatment-word', { yPercent: 115, autoAlpha: 0, duration: 0.7, stagger: 0.055, ease: 'power3.out', scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
         gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+        media.add('(min-width: 900px) and (min-height: 760px)', () => {
+          gsap.fromTo('.closing-backdrop', { yPercent: -8, scale: 1.05 }, {
+            yPercent: 0, scale: 1, ease: 'none',
+            scrollTrigger: { id: 'closing-reveal', trigger: '.patient-section', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, scrub: 0.7, invalidateOnRefresh: true },
+          });
+        });
       });
     }, root);
     return () => { media.revert(); ctx.revert(); };
@@ -126,7 +133,16 @@ export default function Home() {
   };
   const goToHelp = (event) => goToScene(event, 'help');
   const goToAbout = (event) => goToScene(event, 'about');
-  return <main ref={root}>
+  const handleContactNavigation = (event) => {
+    if (event.defaultPrevented || !event.target.closest('a[href="#contato"]')) return;
+    const reveal = ScrollTrigger.getById('closing-reveal');
+    if (reveal) {
+      event.preventDefault();
+      window.history.replaceState(null, '', '#contato');
+      window.scrollTo({ top: reveal.end, behavior: 'smooth' });
+    }
+  };
+  return <main ref={root} onClick={handleContactNavigation}>
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header className="site-header flex items-center justify-between">
       <a href="#inicio" aria-label="Rudy Mollick, início" onClick={closeMenu}><Image className="brand-logo" src="/images/rudy-logo.png" width={2167} height={726} alt="Rudy Mollick — Fisioterapia Manipulativa" priority /></a>
@@ -154,7 +170,7 @@ export default function Home() {
         <div className="portrait-scroll"><div className="portrait-entrance"><Image src="/images/rudy-recorte.png" alt="Rudy Mollick de jaleco, segurando um modelo anatômico da coluna vertebral" width={1092} height={1441} className="rudy-portrait" sizes="(max-width: 899px) 90vw, 53vw" priority /></div></div>
         <div className="portrait-caption"><span className="caption-cross" aria-hidden="true">+</span><div><strong>Rudy Mollick</strong><span>Fisioterapia Manipulativa</span></div></div>
         <div className="hero-shade" aria-hidden="true" />
-        <div className="hero-footer flex items-center justify-between"><a href="#cuidado" onClick={goToHelp} className="scroll-cue"><span className="scroll-mouse" aria-hidden="true"><span /></span> CONTINUE O MOVIMENTO <span aria-hidden="true">↓</span></a><span className="hero-footer-note">CIÊNCIA NO CUIDADO. <span>PRESENÇA EM CADA MOVIMENTO.</span></span><span className="chapter-index">01 <span>/ 05</span></span></div>
+        <div className="hero-footer flex items-center justify-between"><a href="#cuidado" onClick={goToHelp} className="scroll-cue"><span className="scroll-mouse" aria-hidden="true"><span /></span> CONTINUE O MOVIMENTO <span aria-hidden="true">↓</span></a><span className="hero-footer-note">CIÊNCIA NO CUIDADO. <span>PRESENÇA EM CADA MOVIMENTO.</span></span><span className="chapter-index">01 <span>/ 06</span></span></div>
       </section>
       <section id="cuidado" className="help-panel" aria-labelledby="help-title">
         <p className="help-reveal section-label">02 — COMO POSSO TE AJUDAR</p>
@@ -207,7 +223,6 @@ export default function Home() {
       </div>
     </section>
 
-    <section id="contato" className="contact-section"><p className="section-label">05 — SEU PRIMEIRO PASSO</p><h2>O que te move<br /><em>faz falta.</em></h2><p>Converse com Rudy sobre o seu atendimento.</p><motion.a className="primary-button" href="https://rudymollick.com.br/" whileHover={reducedMotion ? {} : { y: -3 }}>Acessar os canais de atendimento <span><Arrow diagonal /></span></motion.a><span className="contact-note">Você será direcionado ao site oficial do Rudy.</span></section>
-    <footer className="site-footer flex flex-wrap items-center justify-between gap-5"><span>RUDY MOLLICK <span className="footer-divider">/</span> FISIOTERAPIA</span><a href="#inicio">Voltar ao início ↑</a></footer>
+    <ClosingSections />
   </main>;
 }
