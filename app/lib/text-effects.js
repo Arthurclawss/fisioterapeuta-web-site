@@ -11,7 +11,11 @@ export function splitHeadings(root) {
   });
   const headings = {
     help: split('#help-title'), about: split('#about-title'),
-    patients: split('#patient-title'), faq: split('.faq-column h2'),
+    patients: split('#patient-title .split-heading-lead'), faq: split('.faq-column .split-heading-lead'),
+    summary: split('.treatment-summary h3'),
+    treatment: SplitText.create(root.querySelectorAll('.treatment-title-line:first-child .treatment-word'), {
+      type: 'chars', charsClass: 'split-text-char', aria: 'none',
+    }),
   };
   return {
     ...headings,

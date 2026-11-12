@@ -39,7 +39,7 @@ export default function ClosingSections() {
         <p className="section-label patient-kicker">05 — EXPERIÊNCIAS E DÚVIDAS</p>
         <div className="patient-grid">
           <div className="testimonial-column">
-            <h2 id="patient-title">O que dizem<br /><em>os pacientes.</em></h2>
+            <h2 id="patient-title"><span className="split-heading-lead">O que dizem</span><br /><em><FoldText text="os pacientes." /></em></h2>
             <p className="patient-intro">Conheça as experiências de quem já foi atendido pelo Dr. Rudy, nas avaliações publicadas no Google.</p>
             <div className="testimonial-card">
               <div className="testimonial-card-top"><span className="quote-mark" aria-hidden="true">“</span><span className="review-source">AVALIAÇÕES NO GOOGLE</span></div>
@@ -58,7 +58,7 @@ export default function ClosingSections() {
           </div>
           <div id="duvidas" className="faq-column">
             <span className="small-eyebrow">PERGUNTAS FREQUENTES</span>
-            <h2>Antes do<br /><em>primeiro passo.</em></h2>
+            <h2><span className="split-heading-lead">Antes do</span><br /><em><FoldText text="primeiro passo." /></em></h2>
             <div className="faq-list">
               {faqs.map((faq, index) => <div className="faq-item" key={faq.question}>
                 <h3><button id={`faq-question-${index}`} aria-expanded={openFaq === index} aria-controls={`faq-answer-${index}`} onClick={() => setOpenFaq(openFaq === index ? null : index)}><span className="faq-number">0{index + 1}</span><span>{faq.question}</span><span className="faq-plus" aria-hidden="true">{openFaq === index ? '−' : '+'}</span></button></h3>

@@ -45,9 +45,9 @@ function TreatmentCard({ item, index }) {
   </div>;
 }
 
-function TitleWords({ text }) {
+function TitleWords({ text, fold = false }) {
   const words = text.split(' ');
-  return words.map((word, index) => <span key={`${word}-${index}`} className="treatment-word-mask"><span className="treatment-word">{word}</span>{index < words.length - 1 ? '\u00a0' : null}</span>);
+  return words.map((word, index) => <span key={`${word}-${index}`} className="treatment-word-mask"><span className="treatment-word">{fold ? <FoldText text={word} /> : word}</span>{index < words.length - 1 ? '\u00a0' : null}</span>);
 }
 
 export default function Home() {
@@ -110,9 +110,12 @@ export default function Home() {
           })
             .fromTo('.treatment-intro>.section-label', { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.28 }, 0)
             .fromTo('.treatment-word', { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: 0.02, ease: 'power3.out' }, 0.02)
+            .fromTo(text.treatment.chars, { yPercent: 30, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.38, stagger: { amount: 0.12 }, ease: 'power3.out' }, 0.06)
+            .fromTo('#treatment-title .fold-piece', foldFrom, { ...foldTo, duration: 0.45, stagger: { amount: 0.1 } }, 0.12)
             .fromTo('.treatment-intro>p:not(.section-label), .treatment-intro>.treatment-button', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.04 }, 0.14)
             .fromTo('.treatment-features .treatment-reveal', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.42, stagger: 0.055 }, 0.2)
             .fromTo('.treatment-summary', { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 0.54)
+            .fromTo(text.summary.words, { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.28, stagger: { amount: 0.12 } }, 0.55)
             .fromTo('.care-steps li', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.23, stagger: 0.045 }, 0.64);
         });
         media.add('(max-width: 899px)', () => {
@@ -127,6 +130,9 @@ export default function Home() {
             gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 30, autoAlpha: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
           });
           gsap.from('.treatment-word', { yPercent: 115, autoAlpha: 0, duration: 0.7, stagger: 0.055, ease: 'power3.out', scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
+          gsap.fromTo(text.treatment.chars, { yPercent: 30, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.7, stagger: { amount: 0.18 }, scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
+          gsap.fromTo('#treatment-title .fold-piece', foldFrom, { ...foldTo, duration: 0.85, stagger: 0.07, scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
+          gsap.fromTo(text.summary.words, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.05, scrollTrigger: { trigger: '.treatment-summary', start: 'top 85%', toggleActions: 'play none none reverse' } });
         });
         gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: true } });
         media.add('(min-width: 900px) and (min-height: 760px)', () => {
@@ -146,8 +152,10 @@ export default function Home() {
             .fromTo('.faq-column', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55 }, 0.08);
           const patientEntrance = ScrollTrigger.getById('patient-entrance').animation;
           patientEntrance
-            .fromTo(text.patients.words, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: { amount: 0.12 } }, 0.08)
-            .fromTo(text.faq.words, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: { amount: 0.12 } }, 0.12);
+            .fromTo(text.patients.words, { yPercent: 65, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: { amount: 0.18 } }, 0.12)
+            .fromTo('#patient-title .fold-piece', foldFrom, { ...foldTo, duration: 0.36, stagger: { amount: 0.1 } }, 0.22)
+            .fromTo(text.faq.words, { yPercent: 65, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.38, stagger: { amount: 0.14 } }, 0.15)
+            .fromTo('.faq-column h2 .fold-piece', foldFrom, { ...foldTo, duration: 0.34, stagger: { amount: 0.08 } }, 0.28);
           // Reveal the contact scene as a stationary surface. Transforming its
           // background exposed a dark strip below it during the curtain reveal.
           ScrollTrigger.create({
@@ -158,6 +166,9 @@ export default function Home() {
         media.add('(max-width: 899px), (max-height: 759px)', () => {
           for (const heading of [text.patients, text.faq]) {
             gsap.fromTo(heading.words, { yPercent: 35, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.045, scrollTrigger: { trigger: heading.elements[0], start: 'top 85%', toggleActions: 'play none none reverse' } });
+          }
+          for (const heading of ['#patient-title', '.faq-column h2']) {
+            gsap.fromTo(`${heading} .fold-piece`, foldFrom, { ...foldTo, duration: 0.9, stagger: 0.09, scrollTrigger: { trigger: heading, start: 'top 80%', toggleActions: 'play none none reverse' } });
           }
           gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 0.8, stagger: 0.08, scrollTrigger: { trigger: '#contact-title', start: 'top 85%', toggleActions: 'play none none reverse' } });
         });
@@ -246,7 +257,7 @@ export default function Home() {
         <div className="treatment-row treatment-row-top grid gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="treatment-reveal treatment-intro">
             <p className="section-label">04 — TRATAMENTO ESPECIALIZADO</p>
-            <h2 id="treatment-title" aria-label="O cuidado certo. Para o seu movimento."><span className="treatment-title-line" aria-hidden="true"><TitleWords text="O cuidado certo." /></span><em className="treatment-title-line" aria-hidden="true"><TitleWords text="Para o seu movimento." /></em></h2>
+            <h2 id="treatment-title" aria-label="O cuidado certo. Para o seu movimento."><span className="treatment-title-line" aria-hidden="true"><TitleWords text="O cuidado certo." /></span><em className="treatment-title-line" aria-hidden="true"><TitleWords text="Para o seu movimento." fold /></em></h2>
             <p>Seu corpo merece um olhar individual. A <strong>fisioterapia manipulativa</strong> começa pela avaliação e considera o que você precisa no dia a dia.</p>
             <p className="treatment-intro-note"><span aria-hidden="true" /> Você participa de cada passo do seu cuidado.</p>
             <motion.a href="#contato" className="treatment-button treatment-button-primary" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.98 }}><span className="button-glare" aria-hidden="true" /><span>Conversar com o Rudy</span><Arrow diagonal /></motion.a>

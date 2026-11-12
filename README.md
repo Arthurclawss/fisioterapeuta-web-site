@@ -15,7 +15,7 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Efeitos
 
-- Os títulos usam adaptações dos efeitos [Fold Text](https://reactbits.dev/text-animations/fold-text) e [Split Text](https://reactbits.dev/text-animations/split-text). A dobra em perspectiva aparece na hero e na frase final de agendamento; o plugin GSAP SplitText divide os títulos de cuidado, apresentação, depoimentos e FAQ em palavras. As mesmas timelines controlam texto e cenas, sem animações concorrentes. A seção 04 mantém a entrada por palavras e seu atraso de chegada. Sem JavaScript ou com movimento reduzido, o texto permanece legível.
+- Os títulos usam adaptações dos efeitos [Fold Text](https://reactbits.dev/text-animations/fold-text) e [Split Text](https://reactbits.dev/text-animations/split-text). A dobra em perspectiva aparece na hero, nas frases azuis de tratamento, depoimentos e FAQ, e na frase final de agendamento. O plugin GSAP SplitText divide a primeira linha do tratamento em letras e os títulos de cuidado, apresentação, etapas, depoimentos e FAQ em palavras. As mesmas timelines controlam texto e cenas. A seção 04 preserva seu atraso de chegada; as dobras das seções 04 e 05 se abrem durante a subida. Sem JavaScript ou com movimento reduzido, o texto permanece legível.
 
 - GSAP controla a entrada de texto e foto. ScrollTrigger fixa a cena no desktop: o texto inicial sai, o retrato se desloca para a esquerda e, após a foto parar, entra o conteúdo de “Como posso te ajudar” à direita. Continuando a rolar, esse texto sai e dá lugar a “Conheça o Rudy”, mantendo a mesma imagem na mesma posição. Ao rolar de volta, a sequência se inverte.
 - Em telas menores, o parallax é leve e não prende a rolagem.
