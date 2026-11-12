@@ -4,6 +4,8 @@ Hero e seções de apoio em Next.js (App Router), React, Tailwind CSS, GSAP/Scro
 
 A rolagem suave global usa Lenis, sincronizado ao ticker do GSAP e ao ScrollTrigger. Links de navegação e transições compartilham o mesmo controlador. Gestos de toque continuam nativos; movimento reduzido desativa o controlador. A entrada da seção 04 usa o progresso real da rolagem, sem uma segunda camada de atraso sobre o Lenis.
 
+A sobreposição da seção 04 só é ativada com a classe `motion-ready`, dentro do efeito de layout que prepara as animações. Antes da hidratação, ela permanece no fluxo normal, evitando aparecer sobre a hero. Os elementos de entrada também têm uma base de opacidade no CSS para não exibir um quadro visível antes do GSAP definir seus estados. Sem JavaScript ou com movimento reduzido, o conteúdo segue visível.
+
 ```sh
 npm install
 npm run dev

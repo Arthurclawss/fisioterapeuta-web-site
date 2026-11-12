@@ -91,9 +91,9 @@
 .privacy-page section p { font-size:15px; color:#acc4cf; line-height:1.9; }
 .privacy-page section a { color:var(--cyan); text-decoration:underline; }
 @media (min-width:900px) and (min-height:760px) and (prefers-reduced-motion:no-preference) {
-  .closing-story { padding-bottom:100svh; }
-  .closing-shell { margin-top:-100svh; }
-  .closing-scene { height:100svh; }
+  .motion-ready .closing-story { padding-bottom:100svh; }
+  .motion-ready .closing-shell { margin-top:-100svh; }
+  .motion-ready .closing-scene { height:100svh; }
 }
 @media (min-width:900px) and (max-height:850px) { .contact-final { padding-top:35px; } .contact-intro h2 { font-size:55px; } .map-frame { height:205px; } .contact-intro>p { margin:17px 0; } .footer-main { padding:19px 0; } .final-footer { padding-bottom:18px; } }
 @media (max-width:1100px) and (min-width:900px) { .patient-grid { gap:6%; } .testimonial-card { padding-inline:22px; } .faq-item h3>button { font-size:13px; gap:13px; } .contact-main-grid { gap:6%; } .contact-final { padding-inline:6%; } .final-footer { padding-inline:6%; } .footer-main { gap:15px; } .footer-logo { width:145px; } }

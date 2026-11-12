@@ -54,6 +54,10 @@ export default function Home() {
   const reducedMotion = useReducedMotion();
 
   useLayoutEffect(() => {
+    const container = root.current;
+    // Only enable the overlapping layout once this client can create its pins.
+    // The server-rendered page stays in normal flow until this layout effect.
+    container.classList.add('motion-ready');
     const media = gsap.matchMedia();
     const ctx = gsap.context(() => {
       media.add('(prefers-reduced-motion: no-preference)', () => {
@@ -123,7 +127,7 @@ export default function Home() {
         });
       });
     }, root);
-    return () => { media.revert(); ctx.revert(); };
+    return () => { media.revert(); ctx.revert(); container.classList.remove('motion-ready'); };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);

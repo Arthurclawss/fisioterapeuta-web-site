@@ -85,7 +85,17 @@ h2 em { color: var(--cyan); font-weight: 400; }
 .care-bottom { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid #a5dce420; padding: 28px 0; color: #92aeb8; font-size: 10px; letter-spacing: .17em; }
 .treatment-section { position:relative; z-index:20; isolation:isolate; overflow:hidden; padding:72px 5.5% 64px; background:#06141b; border-top:1px solid #9ce8ef26; }
 @media (min-width:900px) and (prefers-reduced-motion:no-preference) {
-  .treatment-section { margin-top:calc(-1 * clamp(800px, 100svh, 1150px)); min-height:100svh; box-shadow:0 -35px 90px #0005; }
+  .motion-ready .treatment-section { margin-top:calc(-1 * clamp(800px, 100svh, 1150px)); min-height:100svh; box-shadow:0 -35px 90px #0005; }
+  .motion-ready .treatment-intro>.section-label,
+  .motion-ready .treatment-word,
+  .motion-ready .treatment-intro>p:not(.section-label),
+  .motion-ready .treatment-intro>.treatment-button,
+  .motion-ready .treatment-features .treatment-reveal,
+  .motion-ready .treatment-summary,
+  .motion-ready .care-steps li { opacity:0; }
+  .motion-ready .treatment-features .treatment-reveal,
+  .motion-ready .treatment-word,
+  .motion-ready .treatment-summary { backface-visibility:hidden; will-change:transform,opacity; }
 }
 .treatment-content { position:relative; z-index:1; max-width:1600px; margin-inline:auto; }
 .treatment-atmosphere { position:absolute; inset:-15% 0; z-index:0; opacity:.6; pointer-events:none; background:radial-gradient(ellipse at 57% 23%,#1e596951,transparent 44%),linear-gradient(180deg,#07171f00 15%,#06141b 85%); }
