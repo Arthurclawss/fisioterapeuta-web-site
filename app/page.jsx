@@ -27,35 +27,48 @@ export default function Home() {
           .from('.hero-description, .hero-actions, .hero-footer', { y: 22, autoAlpha: 0, stagger: 0.12, duration: 0.75 }, 0.7);
 
         media.add('(min-width: 900px)', () => {
-          const scroll = gsap.timeline({ scrollTrigger: { trigger: '.hero-stage', start: 'top top', end: '+=80%', scrub: 1, pin: '.hero', anticipatePin: 1, invalidateOnRefresh: true } });
-          scroll.to('.hero-copy', { yPercent: -30, opacity: 0, ease: 'none' }, 0)
-            .to('.portrait-scroll', { yPercent: -9, scale: 1.06, ease: 'none' }, 0)
-            .to('.backdrop-word', { xPercent: -16, yPercent: -25, ease: 'none' }, 0)
-            .to('.orbit', { rotation: 40, scale: 1.3, ease: 'none' }, 0)
-            .to('.portrait-caption, .hero-footer', { opacity: 0, y: -35 }, 0)
-            .to('.hero-shade', { opacity: 0.8 }, 0.5);
+          const portrait = root.current.querySelector('.portrait-scroll');
+          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=170%', scrub: 0.8, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
+          scroll.to('.hero-copy', { y: -45, autoAlpha: 0, duration: 0.22 }, 0)
+            .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -20, duration: 0.2 }, 0)
+            .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', duration: 0.65, ease: 'power2.inOut' }, 0.2)
+            .to('.backdrop-word', { xPercent: -30, autoAlpha: 0.25, duration: 0.85 }, 0)
+            .to('.orbit', { x: '-35vw', rotation: 30, duration: 0.85 }, 0)
+            .fromTo('.help-panel', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.88)
+            .fromTo('.help-reveal', { y: 35, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.09, ease: 'power2.out' }, 0.9)
+            .to({}, { duration: 0.25 });
         });
         media.add('(max-width: 899px)', () => {
           gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
           gsap.to('.backdrop-word', { xPercent: -12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.8 } });
+          gsap.from('.help-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
         });
-        gsap.from('.section-reveal', { y: 45, opacity: 0, duration: 0.9, stagger: 0.15, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
       });
     }, root);
     return () => { media.revert(); ctx.revert(); };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
+  const goToHelp = (event) => {
+    closeMenu();
+    const transition = ScrollTrigger.getById('hero-transition');
+    if (transition) {
+      event.preventDefault();
+      window.history.replaceState(null, '', '#cuidado');
+      window.scrollTo({ top: transition.start + (transition.end - transition.start) * 0.98, behavior: 'smooth' });
+    }
+  };
   return <main ref={root}>
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header className="site-header flex items-center justify-between">
       <a href="#inicio" aria-label="Rudy Mollick, início" onClick={closeMenu}><Image className="brand-logo" src="/images/rudy-logo.png" width={2167} height={726} alt="Rudy Mollick — Fisioterapia Manipulativa" priority /></a>
-      <nav className="hidden items-center gap-10 md:flex" aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#cuidado">O cuidado</a><a className="nav-cta" href="#contato">Vamos conversar <Arrow diagonal /></a></nav>
+      <nav className="hidden items-center gap-10 md:flex" aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#cuidado" onClick={goToHelp}>Como posso te ajudar</a><a className="nav-cta" href="#contato">Vamos conversar <Arrow diagonal /></a></nav>
       <button className="menu-toggle md:hidden" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Fechar −' : 'Menu +'}</button>
     </header>
-    <AnimatePresence>{menuOpen && <motion.nav id="mobile-menu" className="mobile-menu" aria-label="Navegação móvel" initial={{ opacity: 0, y: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reducedMotion ? 0 : -12 }}><a href="#inicio" onClick={closeMenu}>Início</a><a href="#cuidado" onClick={closeMenu}>O cuidado</a><a href="#contato" onClick={closeMenu}>Vamos conversar <Arrow diagonal /></a></motion.nav>}</AnimatePresence>
+    <AnimatePresence>{menuOpen && <motion.nav id="mobile-menu" className="mobile-menu" aria-label="Navegação móvel" initial={{ opacity: 0, y: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reducedMotion ? 0 : -12 }}><a href="#inicio" onClick={closeMenu}>Início</a><a href="#cuidado" onClick={goToHelp}>Como posso te ajudar</a><a href="#contato" onClick={closeMenu}>Vamos conversar <Arrow diagonal /></a></motion.nav>}</AnimatePresence>
 
     <div id="inicio" className="hero-stage">
+      <div className="hero-scene">
       <section className="hero" aria-labelledby="hero-title" id="conteudo">
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-glow" aria-hidden="true" />
@@ -67,23 +80,25 @@ export default function Home() {
           <p className="hero-description">Volte a se conectar com o que te move.<br className="hidden md:block" /> Um cuidado individualizado, que começa por você.</p>
           <div className="hero-actions flex flex-wrap items-center gap-6">
             <motion.a href="#contato" className="primary-button" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.97 }}>Quero dar o primeiro passo <span><Arrow diagonal /></span></motion.a>
-            <a className="text-link" href="#cuidado">Conheça o cuidado <Arrow /></a>
+            <a className="text-link" href="#cuidado" onClick={goToHelp}>Conheça o cuidado <Arrow /></a>
           </div>
         </div>
         <div className="portrait-scroll"><div className="portrait-entrance"><Image src="/images/rudy-recorte.png" alt="Rudy Mollick de jaleco, segurando um modelo anatômico da coluna vertebral" width={1092} height={1441} className="rudy-portrait" sizes="(max-width: 899px) 90vw, 53vw" priority /></div></div>
         <div className="portrait-caption"><span className="caption-cross" aria-hidden="true">+</span><div><strong>Rudy Mollick</strong><span>Fisioterapia Manipulativa</span></div></div>
         <div className="hero-shade" aria-hidden="true" />
-        <div className="hero-footer flex items-center justify-between"><a href="#cuidado" className="scroll-cue"><span className="scroll-mouse" aria-hidden="true"><span /></span> CONTINUE O MOVIMENTO <span aria-hidden="true">↓</span></a><span className="hero-footer-note">CIÊNCIA NO CUIDADO. <span>PRESENÇA EM CADA MOVIMENTO.</span></span><span className="chapter-index">01 <span>/ 03</span></span></div>
+        <div className="hero-footer flex items-center justify-between"><a href="#cuidado" onClick={goToHelp} className="scroll-cue"><span className="scroll-mouse" aria-hidden="true"><span /></span> CONTINUE O MOVIMENTO <span aria-hidden="true">↓</span></a><span className="hero-footer-note">CIÊNCIA NO CUIDADO. <span>PRESENÇA EM CADA MOVIMENTO.</span></span><span className="chapter-index">01 <span>/ 03</span></span></div>
       </section>
+      <section id="cuidado" className="help-panel" aria-labelledby="help-title">
+        <p className="help-reveal section-label">02 — COMO POSSO TE AJUDAR</p>
+        <h2 id="help-title" className="help-reveal">Mais espaço<br />para <em>se mover.</em></h2>
+        <p className="help-reveal help-intro">Quando um movimento faz falta na sua rotina, o primeiro passo é entender o que você está sentindo.</p>
+        <ul className="help-reveal help-topics"><li><span>01</span> Dores que atrapalham o dia a dia</li><li><span>02</span> Dificuldade para se movimentar</li><li><span>03</span> Insegurança para retomar atividades</li></ul>
+        <div className="help-reveal"><a href="#contato" className="text-link">Vamos conversar sobre você <Arrow diagonal /></a></div>
+      </section>
+      </div>
     </div>
 
-    <section id="cuidado" className="care-section">
-      <div className="section-reveal section-label"><span>01 — O CUIDADO</span><span aria-hidden="true">↘</span></div>
-      <div className="care-grid"><h2 className="section-reveal">O próximo passo<br />é <em>sobre você.</em></h2><div className="section-reveal care-copy"><p>Seu corpo conta uma história. Sua rotina, seus limites e os movimentos que fazem falta são o ponto de partida para uma conversa sobre o seu cuidado.</p><a href="#contato" className="text-link">Vamos começar essa conversa <Arrow diagonal /></a></div></div>
-      <div className="care-bottom"><span>ESCUTAR.</span><span>COMPREENDER.</span><span className="text-cyan-300">CUIDAR.</span></div>
-    </section>
-
-    <section id="contato" className="contact-section"><p className="section-label">02 — SEU PRIMEIRO PASSO</p><h2>O que te move<br /><em>faz falta.</em></h2><p>Converse com Rudy sobre o seu atendimento.</p><motion.a className="primary-button" href="https://rudymollick.com.br/" whileHover={reducedMotion ? {} : { y: -3 }}>Acessar os canais de atendimento <span><Arrow diagonal /></span></motion.a><span className="contact-note">Você será direcionado ao site oficial do Rudy.</span></section>
+    <section id="contato" className="contact-section"><p className="section-label">03 — SEU PRIMEIRO PASSO</p><h2>O que te move<br /><em>faz falta.</em></h2><p>Converse com Rudy sobre o seu atendimento.</p><motion.a className="primary-button" href="https://rudymollick.com.br/" whileHover={reducedMotion ? {} : { y: -3 }}>Acessar os canais de atendimento <span><Arrow diagonal /></span></motion.a><span className="contact-note">Você será direcionado ao site oficial do Rudy.</span></section>
     <footer className="site-footer flex flex-wrap items-center justify-between gap-5"><span>RUDY MOLLICK <span className="footer-divider">/</span> FISIOTERAPIA</span><a href="#inicio">Voltar ao início ↑</a></footer>
   </main>;
 }

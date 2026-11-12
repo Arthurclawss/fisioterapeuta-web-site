@@ -18,6 +18,20 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--cyan); outline-
 .site-header nav a:hover { color: var(--cyan); }
 .nav-cta { display: flex; align-items: center; gap: 24px; border: 1px solid #acd9e43d; padding: 14px 22px; border-radius: 2px; }
 .hero { position: relative; height: max(800px, 100svh); max-height: 1150px; overflow: hidden; isolation: isolate; background: #07171f; }
+.hero-scene { position: relative; }
+.help-panel { position: absolute; z-index: 12; top: 21%; left: 56%; width: 36%; }
+.help-panel .section-label { margin-bottom: 25px; color: var(--cyan); }
+.help-panel h2 { font-size: clamp(42px, 4.5vw, 72px); }
+.help-intro { margin: 23px 0; max-width: 410px; color: #a8bdc5; font-size: 14px; line-height: 1.9; }
+.help-topics { list-style: none; padding: 0; margin: 0 0 28px; }
+.help-topics li { border-top: 1px solid #a5dce426; padding: 17px 0; font-size: 13px; color: #d0dfe3; }
+.help-topics li:last-child { border-bottom: 1px solid #a5dce426; }
+.help-topics li span { display: inline-block; color: var(--cyan); font-size: 9px; margin-right: 20px; }
+@media (min-width:900px) and (prefers-reduced-motion:no-preference) { .help-panel { visibility:hidden; } }
+@media (max-width:899px), (prefers-reduced-motion:reduce) {
+  .help-panel { position:relative; top:auto; left:auto; width:auto; padding:75px 7%; background:#0a1e27; }
+  .help-panel h2 { font-size:clamp(40px,6vw,64px); }
+}
 .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(#8ee9f104 1px, transparent 1px), linear-gradient(90deg,#8ee9f104 1px,transparent 1px); background-size: 100px 100px; mask-image: linear-gradient(90deg,transparent,#000); }
 .hero-glow { position: absolute; width: 75%; height: 120%; left: 34%; top: -8%; background: radial-gradient(ellipse, #22667b78 0, #153b4b50 35%,transparent 70%); }
 .orbit { position: absolute; border: 1px solid #8cdae41c; width: 620px; height: 620px; border-radius: 50%; top: 17%; left: 50%; }
