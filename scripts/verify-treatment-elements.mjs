@@ -21,10 +21,25 @@ try {
   await page.waitForTimeout(400);
   assert.equal(await card.getAttribute('data-spotlight'), 'on');
   assert.ok(Number(await card.locator('.spotlight-glow').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
+  const size = await card.boundingBox();
+  await card.hover({ position: { x: size.width * 0.8, y: size.height * 0.25 } });
+  await page.waitForTimeout(700);
+  const tilt = await card.evaluate(el => {
+    const matrix = new DOMMatrix(getComputedStyle(el).transform);
+    return { xDepth: matrix.m13, yDepth: matrix.m23, scale: Math.hypot(matrix.m11, matrix.m12, matrix.m13) };
+  });
+  assert.ok(tilt.xDepth < -0.01, 'Right side under pointer must recede');
+  assert.ok(tilt.yDepth > 0.01, 'Upper side under pointer must recede');
+  assert.ok(tilt.scale > 1.01 && tilt.scale < 1.03, 'Scale must stay subtle');
   await page.screenshot({ path: 'artifacts/treatments-refined-desktop.png' });
+  await page.screenshot({ path: 'artifacts/treatments-card-tilt.png' });
+  await card.hover({ position: { x: size.width * 0.2, y: size.height * 0.75 } });
+  await page.waitForTimeout(700);
+  assert.ok(await card.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m13 > 0.01), 'Opposite cursor position must reverse tilt');
   await page.mouse.move(0, 0);
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(900);
   assert.equal(await card.getAttribute('data-spotlight'), 'off');
+  assert.ok(await card.evaluate(el => Math.abs(new DOMMatrix(getComputedStyle(el).transform).m13) < 0.001), 'Tilt must reset after pointer leaves');
   for (const width of [320, 390, 768]) {
     await page.setViewportSize({ width, height: 844 });
     await page.locator('#tratamentos').scrollIntoViewIfNeeded();
@@ -36,5 +51,5 @@ try {
   assert.equal(await page.locator('.spotlight-glow').first().evaluate(el => getComputedStyle(el).display), 'none');
   assert.equal(await page.locator('.treatment-word').first().evaluate(el => getComputedStyle(el).opacity), '1');
   assert.deepEqual(errors, []);
-  console.log('PASS: title spacing, spotlight hover/leave, three care steps, primary CTA, desktop and 320/390/768px layouts, reduced motion.');
+  console.log('PASS: 3D tilt direction, subtle scale, reset, spotlight, title, care steps, CTA, responsive layouts and reduced motion.');
 } finally { await browser.close(); }

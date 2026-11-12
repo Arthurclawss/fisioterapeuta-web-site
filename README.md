@@ -19,6 +19,7 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 - No desktop, a cena do Rudy continua fixa durante mais uma tela de rolagem. A seção 04 sobe em uma camada opaca à frente até cobrir a tela, com uma sombra na borda superior. A sobreposição se inverte ao subir e é desativada com movimento reduzido.
 - Ao chegar ao topo, a seção 04 mantém o enquadramento por mais 35% da altura da tela de rolagem (máximo de 420 px), depois libera a continuação. Essa pausa é controlada pelo ScrollTrigger `treatment-hold` e não se aplica ao celular ou à preferência por movimento reduzido.
 - Os efeitos de spotlight nos cartões, título por palavras e reflexo no botão são implementações próprias inspiradas nos componentes [Spotlight Card](https://reactbits.dev/components/spotlight-card), [Split Text](https://reactbits.dev/text-animations/split-text) e [Glare Hover](https://reactbits.dev/animations/glare-hover) do React Bits. Não foi adicionada uma dependência do React Bits. O título usa GSAP; os cartões usam CSS e Framer Motion. Os efeitos de cursor não escondem conteúdo e são desativados em telas de toque e com movimento reduzido.
+- Os seis cartões inclinam até 6 graus, com perspectiva de 900 px e escala de 1,018. O lado sob o cursor recua e o oposto avança. Molas do Framer Motion suavizam a resposta e o retorno ao retirar o cursor. O efeito não interfere nas transformações de entrada aplicadas ao contêiner pelo GSAP.
 
 ## Conteúdo e imagens
 
