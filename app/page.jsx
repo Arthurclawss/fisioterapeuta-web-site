@@ -5,11 +5,10 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import SpotlightCard from './components/SpotlightCard';
 import ClosingSections from './components/ClosingSections';
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 function Arrow({ diagonal = false, ...props }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d={diagonal ? 'M5 19 19 5M5 5h14v14' : 'M4 12h15m-6-6 6 6-6 6'} /></svg>;
@@ -83,33 +82,7 @@ export default function Home() {
           // section travels upward over it for one full viewport of scrolling.
           const chapterDuration = scroll.duration();
           scroll.to('.hero-shade', { opacity: 0.3, duration: chapterDuration / 3, ease: 'none' });
-          let locked = false;
-          let arrivalTween;
-          let previousScrollBehavior;
-          const restoreScrollBehavior = () => {
-            if (previousScrollBehavior !== undefined) {
-              document.documentElement.style.scrollBehavior = previousScrollBehavior;
-              previousScrollBehavior = undefined;
-            }
-          };
-          const entrance = gsap.timeline({ paused: true, onComplete: () => { locked = false; } })
-            .fromTo('.treatment-intro', { y: 0, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.15 }, 0)
-            .fromTo('.treatment-word', { yPercent: 115, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.055, ease: 'power3.out' }, 0.1)
-            .fromTo('.treatment-intro>p, .treatment-intro>.treatment-button', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.07, ease: 'power2.out' }, 0.3)
-            .fromTo('.treatment-reveal:not(.treatment-intro)', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.65, stagger: 0.075, ease: 'power2.out' }, 0.4);
-          const hideContent = () => {
-            entrance.pause(0);
-            gsap.set('.treatment-reveal', { autoAlpha: 0 });
-          };
-          const showContent = (trigger) => {
-            const boundary = trigger?.start ?? ScrollTrigger.getById('treatment-hold')?.start;
-            if (boundary !== undefined && window.scrollY < boundary - 1) return;
-            if (entrance.progress() < 1) {
-              locked = true;
-              entrance.play();
-            } else locked = false;
-          };
-          const hold = ScrollTrigger.create({
+          ScrollTrigger.create({
             id: 'treatment-hold',
             trigger: '#tratamentos',
             start: 'top top',
@@ -118,55 +91,17 @@ export default function Home() {
             pinSpacing: true,
             anticipatePin: 0,
             invalidateOnRefresh: true,
-            onEnter: showContent,
-            onLeaveBack: self => {
-              if (window.scrollY < self.start - 3 && !arrivalTween) { hideContent(); locked = false; }
-            },
-            onRefresh: self => {
-              if (window.scrollY > self.start + 1) {
-                entrance.progress(1).pause();
-                locked = false;
-              }
-            },
           });
-          if (window.scrollY < hold.start) hideContent();
-          const cancelArrival = () => { arrivalTween?.kill(); arrivalTween = null; restoreScrollBehavior(); locked = false; };
-          const onWheel = event => {
-            if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.deltaY === 0) return;
-            if (locked) {
-              if (event.deltaY < 0) { cancelArrival(); return; }
-              event.preventDefault();
-              return;
-            }
-            const narrative = scroll.scrollTrigger;
-            const ready = narrative.start + (narrative.end - narrative.start) * scroll.labels.about / scroll.duration();
-            if (event.deltaY > 0 && window.scrollY >= ready && window.scrollY < hold.start - 2) {
-              event.preventDefault();
-              locked = true;
-              previousScrollBehavior = document.documentElement.style.scrollBehavior;
-              document.documentElement.style.scrollBehavior = 'auto';
-              arrivalTween = gsap.to(window, {
-                scrollTo: { y: hold.start + 1, autoKill: false }, duration: 0.85, ease: 'power2.inOut',
-                onComplete: () => { arrivalTween = null; restoreScrollBehavior(); showContent(); },
-              });
-            }
-          };
-          const onKey = event => { if (['ArrowUp', 'PageUp', 'Home', 'Escape'].includes(event.key)) cancelArrival(); };
-          const onScroll = () => {
-            if (arrivalTween) return;
-            if (window.scrollY < hold.start - 4 && entrance.progress() > 0) { hideContent(); locked = false; }
-            else if (window.scrollY >= hold.start && window.scrollY <= hold.end && entrance.progress() === 0 && !entrance.isActive()) showContent(hold);
-          };
-          window.addEventListener('wheel', onWheel, { passive: false });
-          window.addEventListener('keydown', onKey);
-          window.addEventListener('scroll', onScroll, { passive: true });
-          return () => {
-            window.removeEventListener('wheel', onWheel);
-            window.removeEventListener('keydown', onKey);
-            window.removeEventListener('scroll', onScroll);
-            arrivalTween?.kill();
-            restoreScrollBehavior();
-          };
+          gsap.timeline({
+            defaults: { ease: 'power2.out' },
+            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 90%', end: 'top top', scrub: 0.65, invalidateOnRefresh: true },
+          })
+            .fromTo('.treatment-intro', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.26 }, 0)
+            .fromTo('.treatment-word', { yPercent: 85, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.48, stagger: 0.025, ease: 'power3.out' }, 0.04)
+            .fromTo('.treatment-intro>p, .treatment-intro>.treatment-button', { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.035 }, 0.16)
+            .fromTo('.treatment-features .treatment-reveal', { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.075 }, 0.23)
+            .fromTo('.treatment-summary', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.33 }, 0.63)
+            .fromTo('.care-steps li', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.23, stagger: 0.06 }, 0.7);
         });
         media.add('(max-width: 899px)', () => {
           gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
