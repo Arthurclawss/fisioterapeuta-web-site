@@ -5,6 +5,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import SpotlightCard from './components/SpotlightCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,15 +26,30 @@ function TreatmentIcon({ kind }) {
 }
 
 const treatmentHighlights = [
-  { kind: 'assessment', title: 'Avaliação individual', text: 'Entender suas queixas, sua rotina e como você se movimenta é o ponto de partida.' },
-  { kind: 'hands', title: 'Fisioterapia manipulativa', text: 'Uma abordagem manual que considera suas necessidades e a avaliação do seu corpo.' },
-  { kind: 'movement', title: 'Movimento e função', text: 'Atenção aos movimentos que fazem diferença para você nas atividades do dia a dia.' },
+  { kind: 'assessment', title: 'Avaliação individual', text: 'Suas queixas, sua rotina e seus movimentos orientam o primeiro passo.' },
+  { kind: 'hands', title: 'Fisioterapia manipulativa', text: 'Uma abordagem manual que considera a avaliação e as necessidades do seu corpo.' },
+  { kind: 'movement', title: 'Movimento e função', text: 'Atenção ao que você precisa retomar nas atividades do dia a dia.' },
 ];
 const careHighlights = [
-  { kind: 'listening', title: 'Escuta atenta', text: 'Espaço para falar sobre o que você sente e o que deseja retomar na sua rotina.' },
-  { kind: 'guidance', title: 'Orientações claras', text: 'Uma conversa acessível sobre o cuidado e os próximos passos do atendimento.' },
-  { kind: 'personal', title: 'Cuidado individualizado', text: 'Suas necessidades e seus limites são parte da conversa em cada etapa.' },
+  { kind: 'listening', title: 'Escuta atenta', text: 'Espaço para contar o que você sente e o que faz falta na sua rotina.' },
+  { kind: 'guidance', title: 'Orientações claras', text: 'Entenda seu cuidado e os próximos passos do atendimento.' },
+  { kind: 'personal', title: 'Cuidado individualizado', text: 'Suas necessidades e seus limites considerados em cada etapa.' },
 ];
+
+function TreatmentCard({ item, index, compact = false }) {
+  return <div className="treatment-reveal">
+    <SpotlightCard className={`treatment-feature ${compact ? 'treatment-feature-compact' : ''}`}>
+      <span className="feature-number" aria-hidden="true">0{index + 1}</span>
+      <span className="treatment-icon"><TreatmentIcon kind={item.kind} /></span>
+      <h3>{item.title}</h3><p>{item.text}</p>
+    </SpotlightCard>
+  </div>;
+}
+
+function TitleWords({ text }) {
+  const words = text.split(' ');
+  return words.map((word, index) => <span key={`${word}-${index}`} className="treatment-word-mask"><span className="treatment-word">{word}</span>{index < words.length - 1 ? '\u00a0' : null}</span>);
+}
 
 export default function Home() {
   const root = useRef(null);
@@ -88,8 +104,9 @@ export default function Home() {
           gsap.from('.about-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#sobre', start: 'top 82%', toggleActions: 'play none none reverse' } });
         });
         root.current.querySelectorAll('.treatment-row').forEach(row => {
-          gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 35, autoAlpha: 0, duration: 0.85, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
+          gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 30, autoAlpha: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
         });
+        gsap.from('.treatment-word', { yPercent: 115, autoAlpha: 0, duration: 0.7, stagger: 0.055, ease: 'power3.out', scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
         gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: 1 } });
       });
     }, root);
@@ -163,24 +180,28 @@ export default function Home() {
         <div className="treatment-row treatment-row-top grid gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="treatment-reveal treatment-intro">
             <p className="section-label">04 — TRATAMENTO ESPECIALIZADO</p>
-            <h2 id="treatment-title">O cuidado certo.<br /><em>Para o seu movimento.</em></h2>
-            <p>Seu corpo merece um olhar individual. A <strong>fisioterapia manipulativa</strong> faz parte de um cuidado que começa pela avaliação e considera o que você precisa no dia a dia.</p>
-            <p>Da primeira conversa aos próximos passos, você participa do seu cuidado.</p>
-            <motion.a href="#contato" className="treatment-button" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.98 }}>Conversar sobre meu atendimento <Arrow diagonal /></motion.a>
+            <h2 id="treatment-title" aria-label="O cuidado certo. Para o seu movimento."><span className="treatment-title-line" aria-hidden="true"><TitleWords text="O cuidado certo." /></span><em className="treatment-title-line" aria-hidden="true"><TitleWords text="Para o seu movimento." /></em></h2>
+            <p>Seu corpo merece um olhar individual. A <strong>fisioterapia manipulativa</strong> começa pela avaliação e considera o que você precisa no dia a dia.</p>
+            <p className="treatment-intro-note"><span aria-hidden="true" /> Você participa de cada passo do seu cuidado.</p>
+            <motion.a href="#contato" className="treatment-button treatment-button-primary" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.98 }}><span className="button-glare" aria-hidden="true" /><span>Conversar com o Rudy</span><Arrow diagonal /></motion.a>
           </div>
           <div className="treatment-features grid gap-9 sm:grid-cols-3 sm:gap-6">
-            {treatmentHighlights.map(item => <article key={item.kind} className="treatment-reveal treatment-feature"><TreatmentIcon kind={item.kind} /><h3>{item.title}</h3><p>{item.text}</p></article>)}
+            {treatmentHighlights.map((item, index) => <TreatmentCard key={item.kind} item={item} index={index} />)}
           </div>
         </div>
         <div className="treatment-row treatment-row-bottom grid gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="treatment-features grid gap-9 sm:grid-cols-3 sm:gap-6">
-            {careHighlights.map(item => <article key={item.kind} className="treatment-reveal treatment-feature"><TreatmentIcon kind={item.kind} /><h3>{item.title}</h3><p>{item.text}</p></article>)}
+            {careHighlights.map((item, index) => <TreatmentCard key={item.kind} item={item} index={index} compact />)}
           </div>
           <div className="treatment-reveal treatment-summary">
             <span className="treatment-small-label">CADA PESSOA, UM PONTO DE PARTIDA.</span>
             <h3>Como funciona<br /><em>o seu cuidado?</em></h3>
-            <p>Primeiro, uma conversa sobre você. Depois, uma avaliação para compreender suas necessidades e orientar o atendimento. O caminho é construído respeitando sua realidade.</p>
-            <motion.a href="#contato" className="treatment-button" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.98 }}>Dar o primeiro passo <Arrow diagonal /></motion.a>
+            <ol className="care-steps" aria-label="Etapas do atendimento">
+              <li><span>01</span><strong>Conversa</strong><p>O que você sente.</p></li>
+              <li><span>02</span><strong>Avaliação</strong><p>O que você precisa.</p></li>
+              <li><span>03</span><strong>Orientação</strong><p>Os próximos passos.</p></li>
+            </ol>
+            <a href="#contato" className="text-link treatment-secondary-link">Dar o primeiro passo <Arrow diagonal /></a>
           </div>
         </div>
       </div>
