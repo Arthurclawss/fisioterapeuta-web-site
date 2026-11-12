@@ -11,7 +11,7 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Efeitos
 
-- GSAP controla a entrada de texto e foto. ScrollTrigger fixa a cena no desktop: o texto inicial sai, o retrato se desloca para a esquerda e, após a foto parar, entra o conteúdo de “Como posso te ajudar” à direita. Ao rolar de volta, a sequência se inverte.
+- GSAP controla a entrada de texto e foto. ScrollTrigger fixa a cena no desktop: o texto inicial sai, o retrato se desloca para a esquerda e, após a foto parar, entra o conteúdo de “Como posso te ajudar” à direita. Continuando a rolar, esse texto sai e dá lugar a “Conheça o Rudy”, mantendo a mesma imagem na mesma posição. Ao rolar de volta, a sequência se inverte.
 - Em telas menores, o parallax é leve e não prende a rolagem.
 - Framer Motion controla os botões e a abertura/saída do menu móvel, em elementos separados das transformações de GSAP.
 - `prefers-reduced-motion` desativa as animações e preserva todo o conteúdo.

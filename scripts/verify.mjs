@@ -30,9 +30,24 @@ try {
   await desktop.evaluate(() => window.scrollTo({ top: 1450, behavior: 'instant' }));
   await desktop.waitForTimeout(1400);
   assert.ok(Math.abs(finalPhotoX - await desktop.locator('.portrait-scroll').evaluate(el => el.getBoundingClientRect().left)) < 2, 'Portrait must stay still during text reveal');
+  await desktop.evaluate(() => window.scrollTo({ top: 2500, behavior: 'instant' }));
+  await desktop.waitForTimeout(1600);
+  assert.equal(await desktop.locator('.help-panel').evaluate(el => getComputedStyle(el).visibility), 'hidden');
+  assert.ok(Number(await desktop.locator('.about-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
+  assert.ok(Math.abs(finalPhotoX - await desktop.locator('.portrait-scroll').evaluate(el => el.getBoundingClientRect().left)) < 2, 'Portrait must remain in same position for about section');
+  await desktop.screenshot({ path: 'artifacts/about-desktop.png' });
+  await desktop.evaluate(() => window.scrollTo({ top: 1150, behavior: 'instant' }));
+  await desktop.waitForTimeout(1500);
+  assert.ok(Number(await desktop.locator('.help-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
+  assert.equal(await desktop.locator('.about-panel').evaluate(el => getComputedStyle(el).visibility), 'hidden');
   await desktop.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await desktop.waitForTimeout(1500);
   assert.ok(Number(await desktop.locator('.hero-copy').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
+  await desktop.locator('.hero-actions .text-link').click();
+  await desktop.waitForTimeout(1800);
+  assert.ok(Number(await desktop.locator('.help-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95, 'Help navigation must land on help, not about');
+  await desktop.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await desktop.waitForTimeout(1400);
   await desktop.locator('.hero-actions .primary-button').click();
   await desktop.waitForTimeout(1500);
   assert.equal(new URL(desktop.url()).hash, '#contato');
@@ -53,11 +68,16 @@ try {
   await mobile.waitForTimeout(1200);
   assert.ok(Number(await mobile.locator('.help-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
   await mobile.screenshot({ path: 'artifacts/care-mobile.png' });
+  await mobile.locator('#sobre').scrollIntoViewIfNeeded();
+  await mobile.waitForTimeout(1600);
+  assert.ok(Number(await mobile.locator('.about-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
+  await mobile.screenshot({ path: 'artifacts/about-mobile.png' });
 
   const reduced = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   await reduced.goto('http://localhost:3000', { waitUntil: 'networkidle' });
   assert.equal(await reduced.locator('.pin-spacer').count(), 0);
   assert.equal(await reduced.locator('.title-line').first().evaluate(el => getComputedStyle(el).opacity), '1');
+  assert.equal(await reduced.locator('.about-panel').evaluate(el => getComputedStyle(el).visibility), 'visible');
   assert.deepEqual(errors, []);
-  console.log('PASS: desktop, scroll parallax, scroll reversal, CTA, mobile, menu, reduced motion, no runtime errors.');
+  console.log('PASS: desktop, help/about sequence, stationary portrait, reverse scroll, chapter navigation, CTA, mobile, reduced motion, no runtime errors.');
 } finally { await browser.close(); }
