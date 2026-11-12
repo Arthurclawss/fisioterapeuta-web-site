@@ -41,7 +41,10 @@ export default function SmoothScroll() {
         if (!target) return;
         event.preventDefault();
         window.history.replaceState(null, '', url.hash);
-        lenis.scrollTo(target, { offset: ['inicio', 'conteudo'].includes(target.id) ? 0 : -100, duration: 1, lerp: 0, easing: t => 1 - Math.pow(1 - t, 4) });
+        // Focus and browser anchor navigation can move the viewport between
+        // animation frames; measure from the actual scroll position.
+        const top = target.getBoundingClientRect().top + window.scrollY;
+        lenis.scrollTo(top, { offset: ['inicio', 'conteudo'].includes(target.id) ? 0 : -100, duration: 1, lerp: 0, easing: t => 1 - Math.pow(1 - t, 4) });
       };
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add(tick);

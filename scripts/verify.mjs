@@ -13,7 +13,7 @@ try {
   await desktop.waitForTimeout(1800);
   await desktop.screenshot({ path: 'artifacts/hero-desktop.png' });
   assert.equal(await desktop.locator('h1').innerText(), 'Seu corpo.\nSeu movimento.\nSua liberdade.');
-  assert.equal(await desktop.locator('.pin-spacer').count(), 3);
+  assert.equal(await desktop.locator('.pin-spacer').count(), 4);
   const before = await desktop.locator('.portrait-scroll').evaluate(el => el.getBoundingClientRect().left);
   await desktop.evaluate(() => window.scrollTo({ top: 600, behavior: 'instant' }));
   await desktop.waitForTimeout(1500);

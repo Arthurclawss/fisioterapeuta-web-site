@@ -31,6 +31,7 @@ export default function ClosingSections() {
   };
 
   return <div className="closing-story">
+    <div className="patient-stage">
     <section id="depoimentos" className="patient-section" aria-labelledby="patient-title">
       <div className="patient-grain" aria-hidden="true" />
       <div className="patient-content">
@@ -68,6 +69,7 @@ export default function ClosingSections() {
         <div className="patient-bottom"><span>O PRÓXIMO PASSO COMEÇA COM UMA CONVERSA.</span><a href="#contato">ENCONTRE O RUDY <span aria-hidden="true">↓</span></a></div>
       </div>
     </section>
+    </div>
 
     <div className="closing-shell">
       <div className="closing-scene">

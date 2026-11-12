@@ -120,9 +120,23 @@ export default function Home() {
         });
         gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: true } });
         media.add('(min-width: 900px) and (min-height: 760px)', () => {
+          // Reserve the short reading pause in normal flow so the inverse
+          // curtain starts after it, including when an FAQ changes height.
+          ScrollTrigger.create({
+            id: 'patient-hold', trigger: '.patient-section', start: 'top top',
+            end: () => `+=${Math.min(200, window.innerHeight * 0.18)}`,
+            pin: true, pinSpacing: true, anticipatePin: 0, invalidateOnRefresh: true,
+          });
+          gsap.timeline({
+            defaults: { ease: 'power2.out' },
+            scrollTrigger: { id: 'patient-entrance', trigger: '.patient-stage', start: 'top 95%', end: 'top 25%', scrub: 0.12, invalidateOnRefresh: true },
+          })
+            .fromTo('.patient-kicker, .testimonial-column>h2, .patient-intro', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.045 }, 0)
+            .fromTo('.testimonial-card, .testimonial-note', { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.04 }, 0.12)
+            .fromTo('.faq-column', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55 }, 0.08);
           gsap.fromTo('.closing-backdrop', { yPercent: -8, scale: 1.05 }, {
             yPercent: 0, scale: 1, ease: 'none',
-            scrollTrigger: { id: 'closing-reveal', trigger: '.patient-section', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, scrub: true, invalidateOnRefresh: true },
+            scrollTrigger: { id: 'closing-reveal', trigger: '.patient-stage', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, scrub: true, invalidateOnRefresh: true },
           });
         });
       });

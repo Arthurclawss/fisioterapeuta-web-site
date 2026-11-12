@@ -26,9 +26,15 @@ try {
   await payment.click();
   await page.waitForTimeout(600);
   assert.equal(await page.locator('#faq-answer-2').count(), 0);
-  const bounds = await page.locator('.patient-section').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, height: el.offsetHeight }));
+  const bounds = await page.locator('.patient-stage').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, height: el.offsetHeight }));
   await page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), bounds.top);
   await page.waitForTimeout(1200);
+  const heldTop = await page.locator('.patient-section').evaluate(el => el.getBoundingClientRect().top);
+  await page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), bounds.top + 100);
+  await page.waitForTimeout(500);
+  assert.ok(Math.abs(heldTop) < 3 && Math.abs(await page.locator('.patient-section').evaluate(el => el.getBoundingClientRect().top)) < 3, 'Section 5 must pause briefly at the top');
+  assert.equal(await page.locator('.faq-item h3>button').first().evaluate(el => getComputedStyle(el).fontSize), '16px');
+  assert.equal(await page.locator('.patient-intro').evaluate(el => getComputedStyle(el).color), 'rgb(209, 225, 231)');
   await page.screenshot({ path: 'artifacts/patients-faq-desktop.png' });
   const revealStart = bounds.top + bounds.height - 900;
   await page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), revealStart + 450);

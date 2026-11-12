@@ -44,14 +44,14 @@ try {
   await page.getByRole('link', { name: 'Voltar ao site' }).click();
   await page.waitForURL('http://localhost:3000/');
   await page.waitForTimeout(700);
-  assert.equal(await page.locator('.pin-spacer').count(), 3, 'Route return must not duplicate pinning');
+  assert.equal(await page.locator('.pin-spacer').count(), 4, 'Route return must not duplicate pinning');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForTimeout(150);
   assert.equal(await page.locator('html').evaluate(el => el.classList.contains('lenis')), false);
   assert.equal(await page.locator('.pin-spacer').count(), 0);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.waitForTimeout(250);
-  assert.equal(await page.locator('.pin-spacer').count(), 3);
+  assert.equal(await page.locator('.pin-spacer').count(), 4);
   assert.deepEqual(errors, []);
   console.log('PASS: global smooth wheel, anchors, pinned scene navigation, modal scroll isolation, route lifecycle and reduced motion.');
 } finally { await browser.close(); }
