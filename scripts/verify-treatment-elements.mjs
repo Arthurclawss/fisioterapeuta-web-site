@@ -10,6 +10,15 @@ try {
   await page.evaluate(() => window.scrollTo({ top: innerHeight * 4 + 100, behavior: 'instant' }));
   await page.waitForTimeout(2200);
   assert.equal(await page.locator('.care-steps li').count(), 3);
+  assert.deepEqual(await page.locator('.treatment-feature h3').allTextContents(), ['Avaliação individual', 'Fisioterapia manipulativa', 'Movimento e função']);
+  assert.deepEqual(await page.locator('.care-steps p').allTextContents(), [
+    'Você conta o que sente e o que faz falta na sua rotina.',
+    'Avaliamos suas necessidades, seus movimentos e seus limites.',
+    'Definimos os próximos passos e esclarecemos como será o seu cuidado.',
+  ]);
+  const layout = await page.locator('.treatment-summary').evaluate(el => ({ width: el.getBoundingClientRect().width, top: el.getBoundingClientRect().top, contentWidth: document.querySelector('.treatment-content').getBoundingClientRect().width, upperBottom: document.querySelector('.treatment-row-top').getBoundingClientRect().bottom }));
+  assert.ok(Math.abs(layout.width - layout.contentWidth) < 2, 'Care steps must occupy full content width');
+  assert.ok(layout.top > layout.upperBottom, 'Care steps must follow presentation and approach');
   assert.equal(await page.locator('.treatment-button-primary').count(), 1);
   const wordGap = await page.locator('.treatment-title-line').first().evaluate(el => {
     const words = el.querySelectorAll('.treatment-word');
@@ -45,6 +54,10 @@ try {
     await page.locator('#tratamentos').scrollIntoViewIfNeeded();
     await page.waitForTimeout(1600);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `No horizontal overflow at ${width}px`);
+    if (width < 640) {
+      const positions = await page.locator('.care-steps li').evaluateAll(items => items.map(el => el.getBoundingClientRect().top));
+      assert.ok(positions[0] < positions[1] && positions[1] < positions[2], 'Mobile steps must follow a vertical sequence');
+    }
     if (width === 390) await page.screenshot({ path: 'artifacts/treatments-refined-mobile.png' });
   }
   await page.emulateMedia({ reducedMotion: 'reduce' });

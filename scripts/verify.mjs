@@ -64,7 +64,7 @@ try {
   await desktop.waitForTimeout(2000);
   assert.equal(new URL(desktop.url()).hash, '#tratamentos');
   assert.ok(await desktop.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top < innerHeight));
-  assert.equal(await desktop.locator('.treatment-feature').count(), 6);
+  assert.equal(await desktop.locator('.treatment-feature').count(), 3);
   await desktop.screenshot({ path: 'artifacts/treatments-desktop.png' });
   await desktop.locator('.treatment-intro .treatment-button').click();
   await desktop.waitForTimeout(1400);

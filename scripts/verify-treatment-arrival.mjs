@@ -1,0 +1,45 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+
+const browser = await chromium.launch({ channel: 'msedge', headless: true });
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1400);
+  await page.mouse.move(720, 450);
+  await page.mouse.wheel(0, 120);
+  await page.waitForTimeout(400);
+  assert.ok(await page.evaluate(() => scrollY < 500), 'Wheel outside transition must keep native scrolling');
+  await page.evaluate(() => window.scrollTo({ top: 2500, behavior: 'instant' }));
+  await page.waitForTimeout(1300);
+  assert.equal(await page.locator('.treatment-intro').evaluate(el => getComputedStyle(el).visibility), 'hidden');
+  await page.mouse.wheel(0, 120);
+  await page.waitForTimeout(180);
+  assert.equal(await page.locator('.treatment-intro').evaluate(el => getComputedStyle(el).visibility), 'hidden', 'Text must wait while section is arriving');
+  await page.waitForTimeout(2100);
+  assert.ok(Math.abs(await page.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top)) < 2, 'One wheel gesture must bring treatment section to top');
+  assert.ok(Math.abs(await page.evaluate(() => scrollY) - 3600) < 2);
+  assert.ok(Number(await page.locator('.treatment-intro').evaluate(el => getComputedStyle(el).opacity)) > 0.99);
+  assert.ok(Number(await page.locator('.treatment-reveal').last().evaluate(el => getComputedStyle(el).opacity)) > 0.99);
+  await page.screenshot({ path: 'artifacts/treatment-one-scroll-arrival.png' });
+  await page.mouse.wheel(0, 430);
+  await page.waitForTimeout(500);
+  assert.ok(await page.evaluate(() => scrollY > 3900), 'Scrolling must resume after content entrance');
+  await page.evaluate(() => window.scrollTo({ top: 2500, behavior: 'instant' }));
+  await page.waitForTimeout(1200);
+  await page.mouse.wheel(0, 120);
+  await page.waitForTimeout(200);
+  await page.mouse.wheel(0, -120);
+  await page.waitForTimeout(1200);
+  assert.ok(await page.evaluate(() => scrollY < 3500), 'Upward gesture must cancel automatic arrival');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.evaluate(() => window.scrollTo({ top: 2500, behavior: 'instant' }));
+  await page.mouse.wheel(0, 120);
+  await page.waitForTimeout(500);
+  assert.ok(await page.evaluate(() => scrollY < 2800), 'Reduced motion must not trigger automatic arrival');
+  assert.equal(await page.locator('.treatment-intro').evaluate(el => getComputedStyle(el).visibility), 'visible');
+  assert.deepEqual(errors, []);
+  console.log('PASS: single-wheel arrival, content waits until landing, scroll resumes, upward cancellation, native scrolling outside boundary and reduced motion.');
+} finally { await browser.close(); }

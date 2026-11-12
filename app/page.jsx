@@ -5,10 +5,11 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import SpotlightCard from './components/SpotlightCard';
 import ClosingSections from './components/ClosingSections';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 function Arrow({ diagonal = false, ...props }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d={diagonal ? 'M5 19 19 5M5 5h14v14' : 'M4 12h15m-6-6 6 6-6 6'} /></svg>;
@@ -31,15 +32,10 @@ const treatmentHighlights = [
   { kind: 'hands', title: 'Fisioterapia manipulativa', text: 'Uma abordagem manual que considera a avaliação e as necessidades do seu corpo.' },
   { kind: 'movement', title: 'Movimento e função', text: 'Atenção ao que você precisa retomar nas atividades do dia a dia.' },
 ];
-const careHighlights = [
-  { kind: 'listening', title: 'Escuta atenta', text: 'Espaço para contar o que você sente e o que faz falta na sua rotina.' },
-  { kind: 'guidance', title: 'Orientações claras', text: 'Entenda seu cuidado e os próximos passos do atendimento.' },
-  { kind: 'personal', title: 'Cuidado individualizado', text: 'Suas necessidades e seus limites considerados em cada etapa.' },
-];
 
-function TreatmentCard({ item, index, compact = false }) {
+function TreatmentCard({ item, index }) {
   return <div className="treatment-reveal">
-    <SpotlightCard className={`treatment-feature ${compact ? 'treatment-feature-compact' : ''}`}>
+    <SpotlightCard className="treatment-feature">
       <span className="feature-number" aria-hidden="true">0{index + 1}</span>
       <span className="treatment-icon"><TreatmentIcon kind={item.kind} /></span>
       <h3>{item.title}</h3><p>{item.text}</p>
@@ -87,27 +83,101 @@ export default function Home() {
           // section travels upward over it for one full viewport of scrolling.
           const chapterDuration = scroll.duration();
           scroll.to('.hero-shade', { opacity: 0.3, duration: chapterDuration / 3, ease: 'none' });
-          ScrollTrigger.create({
+          let locked = false;
+          let arrivalTween;
+          let previousScrollBehavior;
+          const restoreScrollBehavior = () => {
+            if (previousScrollBehavior !== undefined) {
+              document.documentElement.style.scrollBehavior = previousScrollBehavior;
+              previousScrollBehavior = undefined;
+            }
+          };
+          const entrance = gsap.timeline({ paused: true, onComplete: () => { locked = false; } })
+            .fromTo('.treatment-intro', { y: 0, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.15 }, 0)
+            .fromTo('.treatment-word', { yPercent: 115, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.055, ease: 'power3.out' }, 0.1)
+            .fromTo('.treatment-intro>p, .treatment-intro>.treatment-button', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.07, ease: 'power2.out' }, 0.3)
+            .fromTo('.treatment-reveal:not(.treatment-intro)', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.65, stagger: 0.075, ease: 'power2.out' }, 0.4);
+          const hideContent = () => {
+            entrance.pause(0);
+            gsap.set('.treatment-reveal', { autoAlpha: 0 });
+          };
+          const showContent = (trigger) => {
+            const boundary = trigger?.start ?? ScrollTrigger.getById('treatment-hold')?.start;
+            if (boundary !== undefined && window.scrollY < boundary - 1) return;
+            if (entrance.progress() < 1) {
+              locked = true;
+              entrance.play();
+            } else locked = false;
+          };
+          const hold = ScrollTrigger.create({
             id: 'treatment-hold',
             trigger: '#tratamentos',
             start: 'top top',
             end: () => `+=${Math.min(420, window.innerHeight * 0.35)}`,
             pin: true,
             pinSpacing: true,
-            anticipatePin: 1,
+            anticipatePin: 0,
             invalidateOnRefresh: true,
+            onEnter: showContent,
+            onLeaveBack: self => {
+              if (window.scrollY < self.start - 3 && !arrivalTween) { hideContent(); locked = false; }
+            },
+            onRefresh: self => {
+              if (window.scrollY > self.start + 1) {
+                entrance.progress(1).pause();
+                locked = false;
+              }
+            },
           });
+          if (window.scrollY < hold.start) hideContent();
+          const cancelArrival = () => { arrivalTween?.kill(); arrivalTween = null; restoreScrollBehavior(); locked = false; };
+          const onWheel = event => {
+            if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.deltaY === 0) return;
+            if (locked) {
+              if (event.deltaY < 0) { cancelArrival(); return; }
+              event.preventDefault();
+              return;
+            }
+            const narrative = scroll.scrollTrigger;
+            const ready = narrative.start + (narrative.end - narrative.start) * scroll.labels.about / scroll.duration();
+            if (event.deltaY > 0 && window.scrollY >= ready && window.scrollY < hold.start - 2) {
+              event.preventDefault();
+              locked = true;
+              previousScrollBehavior = document.documentElement.style.scrollBehavior;
+              document.documentElement.style.scrollBehavior = 'auto';
+              arrivalTween = gsap.to(window, {
+                scrollTo: { y: hold.start + 1, autoKill: false }, duration: 0.85, ease: 'power2.inOut',
+                onComplete: () => { arrivalTween = null; restoreScrollBehavior(); showContent(); },
+              });
+            }
+          };
+          const onKey = event => { if (['ArrowUp', 'PageUp', 'Home', 'Escape'].includes(event.key)) cancelArrival(); };
+          const onScroll = () => {
+            if (arrivalTween) return;
+            if (window.scrollY < hold.start - 4 && entrance.progress() > 0) { hideContent(); locked = false; }
+            else if (window.scrollY >= hold.start && window.scrollY <= hold.end && entrance.progress() === 0 && !entrance.isActive()) showContent(hold);
+          };
+          window.addEventListener('wheel', onWheel, { passive: false });
+          window.addEventListener('keydown', onKey);
+          window.addEventListener('scroll', onScroll, { passive: true });
+          return () => {
+            window.removeEventListener('wheel', onWheel);
+            window.removeEventListener('keydown', onKey);
+            window.removeEventListener('scroll', onScroll);
+            arrivalTween?.kill();
+            restoreScrollBehavior();
+          };
         });
         media.add('(max-width: 899px)', () => {
           gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
           gsap.to('.scene-watermark-layer', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.8 } });
           gsap.from('.help-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
           gsap.from('.about-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#sobre', start: 'top 82%', toggleActions: 'play none none reverse' } });
+          root.current.querySelectorAll('.treatment-row').forEach(row => {
+            gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 30, autoAlpha: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
+          });
+          gsap.from('.treatment-word', { yPercent: 115, autoAlpha: 0, duration: 0.7, stagger: 0.055, ease: 'power3.out', scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
         });
-        root.current.querySelectorAll('.treatment-row').forEach(row => {
-          gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 30, autoAlpha: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
-        });
-        gsap.from('.treatment-word', { yPercent: 115, autoAlpha: 0, duration: 0.7, stagger: 0.055, ease: 'power3.out', scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
         gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: 1 } });
         media.add('(min-width: 900px) and (min-height: 760px)', () => {
           gsap.fromTo('.closing-backdrop', { yPercent: -8, scale: 1.05 }, {
@@ -133,16 +203,19 @@ export default function Home() {
   };
   const goToHelp = (event) => goToScene(event, 'help');
   const goToAbout = (event) => goToScene(event, 'about');
-  const handleContactNavigation = (event) => {
-    if (event.defaultPrevented || !event.target.closest('a[href="#contato"]')) return;
-    const reveal = ScrollTrigger.getById('closing-reveal');
-    if (reveal) {
+  const handleSectionNavigation = (event) => {
+    if (event.defaultPrevented) return;
+    const link = event.target.closest('a[href="#contato"], a[href="#tratamentos"]');
+    if (!link) return;
+    const treatment = link.getAttribute('href') === '#tratamentos';
+    const transition = ScrollTrigger.getById(treatment ? 'treatment-hold' : 'closing-reveal');
+    if (transition) {
       event.preventDefault();
-      window.history.replaceState(null, '', '#contato');
-      window.scrollTo({ top: reveal.end, behavior: 'smooth' });
+      window.history.replaceState(null, '', treatment ? '#tratamentos' : '#contato');
+      window.scrollTo({ top: treatment ? transition.start + 1 : transition.end, behavior: 'smooth' });
     }
   };
-  return <main ref={root} onClick={handleContactNavigation}>
+  return <main ref={root} onClick={handleSectionNavigation}>
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header className="site-header flex items-center justify-between">
       <a href="#inicio" aria-label="Rudy Mollick, início" onClick={closeMenu}><Image className="brand-logo" src="/images/rudy-logo.png" width={2167} height={726} alt="Rudy Mollick — Fisioterapia Manipulativa" priority /></a>
@@ -206,16 +279,13 @@ export default function Home() {
           </div>
         </div>
         <div className="treatment-row treatment-row-bottom grid gap-12 lg:grid-cols-2 lg:gap-20">
-          <div className="treatment-features grid gap-9 sm:grid-cols-3 sm:gap-6">
-            {careHighlights.map((item, index) => <TreatmentCard key={item.kind} item={item} index={index} compact />)}
-          </div>
           <div className="treatment-reveal treatment-summary">
             <span className="treatment-small-label">CADA PESSOA, UM PONTO DE PARTIDA.</span>
             <h3>Como funciona<br /><em>o seu cuidado?</em></h3>
             <ol className="care-steps" aria-label="Etapas do atendimento">
-              <li><span>01</span><strong>Conversa</strong><p>O que você sente.</p></li>
-              <li><span>02</span><strong>Avaliação</strong><p>O que você precisa.</p></li>
-              <li><span>03</span><strong>Orientação</strong><p>Os próximos passos.</p></li>
+              <li><span>01</span><strong>Conversa</strong><p>Você conta o que sente e o que faz falta na sua rotina.</p></li>
+              <li><span>02</span><strong>Avaliação</strong><p>Avaliamos suas necessidades, seus movimentos e seus limites.</p></li>
+              <li><span>03</span><strong>Orientação</strong><p>Definimos os próximos passos e esclarecemos como será o seu cuidado.</p></li>
             </ol>
             <a href="#contato" className="text-link treatment-secondary-link">Dar o primeiro passo <Arrow diagonal /></a>
           </div>
