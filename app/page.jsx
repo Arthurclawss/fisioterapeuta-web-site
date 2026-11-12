@@ -99,12 +99,12 @@ export default function Home() {
           });
           gsap.timeline({
             defaults: { ease: 'power2.out' },
-            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 90%', end: 'top top', scrub: true, invalidateOnRefresh: true },
+            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 65%', end: 'top top', scrub: 0.18, invalidateOnRefresh: true },
           })
             .fromTo('.treatment-intro>.section-label', { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.28 }, 0)
             .fromTo('.treatment-word', { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: 0.02, ease: 'power3.out' }, 0.02)
             .fromTo('.treatment-intro>p:not(.section-label), .treatment-intro>.treatment-button', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.04 }, 0.14)
-            .fromTo('.treatment-features .treatment-reveal', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.42, stagger: 0.055 }, 0.14)
+            .fromTo('.treatment-features .treatment-reveal', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.42, stagger: 0.055 }, 0.2)
             .fromTo('.treatment-summary', { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 0.54)
             .fromTo('.care-steps li', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.23, stagger: 0.045 }, 0.64);
         });
