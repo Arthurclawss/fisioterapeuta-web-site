@@ -80,9 +80,13 @@ try {
   assert.match(await page.locator('.footer-instagram').getAttribute('href'), /instagram.com\/dr.rudymollick/);
   await page.getByRole('button', { name: 'Conversar pelo WhatsApp' }).click();
   assert.equal(await page.evaluate(() => window.contactDestination), 'https://wa.me/558488734892');
-  await page.route('https://maps.google.com/**', route => route.fulfill({ contentType: 'text/html', body: '<html><body>Embedded map test</body></html>' }));
-  await page.getByRole('button', { name: 'Carregar mapa do Google' }).click();
-  assert.match(decodeURIComponent(await page.locator('.map-frame iframe').getAttribute('src')), /Rua Walter Duarte Pereira, 1620/);
+  assert.equal(await page.getByRole('button', { name: 'Carregar mapa do Google' }).count(), 0);
+  assert.equal(await page.locator('.map-frame iframe').count(), 0);
+  assert.ok(await page.locator('.map-static-image').evaluate(el => el.complete && el.naturalWidth > 1000), 'Real static map must load from the site');
+  assert.match(decodeURIComponent(await page.getByRole('link', { name: 'Traçar rota' }).getAttribute('href')), /Rua Walter Duarte Pereira, 1620/);
+  assert.equal(await page.getByRole('link', { name: /Consultar pelo Instagram/ }).count(), 0);
+  assert.match(await page.locator('.contact-detail-grid').innerText(), /Atendimento exclusivo mediante agendamento prévio/);
+  assert.equal(await page.locator('.contact-phone').evaluate(el => getComputedStyle(el).fontSize), '14px');
   await page.getByRole('link', { name: 'Política de privacidade' }).click();
   await page.waitForURL('**/privacidade');
   assert.match(await page.locator('h1').innerText(), /privacidade/);
@@ -99,6 +103,8 @@ try {
     await page.waitForTimeout(1200);
     assert.equal(new URL(page.url()).hash, '#contato');
     assert.ok(await page.locator('#contato').evaluate(el => el.getBoundingClientRect().top < innerHeight));
+    assert.ok(await page.locator('.map-static-image').evaluate(el => el.complete && el.naturalWidth > 1000));
+    assert.equal(await page.locator('.contact-phone').evaluate(el => getComputedStyle(el).color), 'rgb(220, 233, 239)');
     if (width === 390) await page.screenshot({ path: 'artifacts/contact-mobile.png' });
   }
   await page.setViewportSize({ width: 1440, height: 900 });

@@ -5,7 +5,7 @@ export const contact = {
   // Temporary contact supplied by the site owner; preserve the supplied digits.
   whatsapp: '558488734892',
   whatsappLabel: '(84) 8873-4892',
-  hours: 'Consulte a disponibilidade ao agendar.',
+  hours: 'Atendimento exclusivo mediante agendamento prévio.',
   registration: null,
 };
 

@@ -19,7 +19,6 @@ function Instagram() {
 export default function ClosingSections() {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
-  const [mapLoaded, setMapLoaded] = useState(false);
   const dialog = useRef(null);
   const reduced = useReducedMotion();
   const address = encodeURIComponent(contact.address);
@@ -83,16 +82,19 @@ export default function ClosingSections() {
               <h2 id="contact-title">Seu próximo<br />movimento<br /><em><FoldText text="começa aqui." /></em></h2>
               <p>Uma conversa para entender você.<br />Um primeiro passo para o seu cuidado.</p>
               <button type="button" className="primary-button contact-whatsapp" onClick={whatsapp}>Conversar pelo WhatsApp <span><Arrow /></span></button>
-              <span className="contact-demo-note">WhatsApp · {contact.whatsappLabel}</span>
+              <span className="contact-phone">WhatsApp · {contact.whatsappLabel}</span>
             </div>
             <div className="contact-location">
               <div className="map-frame">
-                {mapLoaded ? <iframe title="Localização do atendimento de Rudy Mollick no Google Maps" src={`https://maps.google.com/maps?q=${address}&z=16&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /> : <div className="map-preview"><div className="map-roads" aria-hidden="true" /><span className="map-pin" aria-hidden="true"><svg width="28" height="34" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 11c0 7-9 16-9 16S3 18 3 11a9 9 0 0 1 18 0Z" /><circle cx="12" cy="11" r="3" /></svg></span><span>CAPIM MACIO · NATAL, RN</span><button type="button" onClick={() => setMapLoaded(true)}>Carregar mapa do Google <Arrow /></button></div>}
+                <picture>
+                  <source media="(max-width:899px)" srcSet="/images/location-map-mobile.png" />
+                  <Image src="/images/location-map.png" alt="Mapa do Google com a localização do atendimento na Rua Walter Duarte Pereira, 1620, Capim Macio, Natal" width={2200} height={1000} className="map-static-image" sizes="(max-width:899px) 86vw, 43vw" />
+                </picture>
               </div>
               <div className="location-caption"><span>UM LUGAR PARA CUIDAR DE VOCÊ.</span><a href={mapsUrl} target="_blank" rel="noopener noreferrer">Traçar rota <Arrow /></a></div>
               <div className="contact-detail-grid">
                 <div><h3>ONDE ENCONTRAR</h3><address>{contact.address}</address></div>
-                <div><h3>HORÁRIOS</h3><p>{contact.hours}</p><a href={contact.instagram} target="_blank" rel="noopener noreferrer">Consultar pelo Instagram ↗</a></div>
+                <div><h3>HORÁRIOS</h3><p>{contact.hours}</p></div>
               </div>
             </div>
           </div>

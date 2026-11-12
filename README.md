@@ -30,11 +30,11 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Conteúdo e imagens
 
-As seções 05 e 06 incluem três avaliações do Google transcritas das imagens fornecidas pelo proprietário, perguntas frequentes em acordeão, mapa do Google sob demanda, endereço, Instagram, contato e rodapé. A seção 05 sobe sobre a cena de contato fixa, revelando-a por baixo no desktop; em celular, telas baixas e movimento reduzido, ambas seguem o fluxo normal.
+As seções 05 e 06 incluem três avaliações do Google transcritas das imagens fornecidas pelo proprietário, perguntas frequentes em acordeão, imagem estática do mapa do Google, endereço, Instagram, contato e rodapé. A seção 05 sobe sobre a cena de contato fixa, revelando-a por baixo no desktop; em celular, telas baixas e movimento reduzido, ambas seguem o fluxo normal.
 
 Os dados ficam em `app/data/site-content.js`. O endereço, Instagram e WhatsApp temporário foram fornecidos pelo proprietário. O e-mail foi conferido no [perfil público do Rudy](https://linktr.ee/Dr.rudymollick). Os botões do FAQ e agendamento abrem o número temporário; substitua `contact.whatsapp` e `contact.whatsappLabel` ao receber o contato definitivo do Rudy. Horários, registro profissional, duração e pagamento ainda dependem de confirmação.
 
-O mapa usa Google Maps Embed por endereço, sem chave de API, e só carrega após a escolha do visitante. A política de privacidade fica em `/privacidade` e descreve o comportamento desta versão, incluindo dados demonstrativos e serviços externos.
+O mapa usa duas capturas estáticas do Google Maps do endereço fornecido, em `public/images/location-map.png` e `location-map-mobile.png`, mantendo o marcador e a atribuição visíveis. O escurecimento é aplicado por CSS. Nenhum iframe é carregado; “Traçar rota” abre o endereço no Google Maps. A política de privacidade fica em `/privacidade` e descreve esse comportamento. O atendimento é informado como exclusivo mediante agendamento prévio.
 
 O logo aparece ampliado como marca-d’água no fundo da cena principal, com opacidade de 8,5% e parallax discreto. É decorativo, fica atrás da foto e dos textos, e não intercepta cliques.
 
