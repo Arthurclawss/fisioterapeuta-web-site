@@ -17,6 +17,7 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 - `prefers-reduced-motion` desativa as animações e preserva todo o conteúdo.
 - A seção 04, “Tratamento especializado”, usa duas linhas alternadas de apresentação e seis destaques com ícones. Os blocos entram com GSAP/ScrollTrigger e o fundo acompanha a rolagem com parallax leve. Em telas menores, a composição vira uma coluna.
 - No desktop, a cena do Rudy continua fixa durante mais uma tela de rolagem. A seção 04 sobe em uma camada opaca à frente até cobrir a tela, com uma sombra na borda superior. A sobreposição se inverte ao subir e é desativada com movimento reduzido.
+- Ao chegar ao topo, a seção 04 mantém o enquadramento por mais 35% da altura da tela de rolagem (máximo de 420 px), depois libera a continuação. Essa pausa é controlada pelo ScrollTrigger `treatment-hold` e não se aplica ao celular ou à preferência por movimento reduzido.
 
 ## Conteúdo e imagens
 

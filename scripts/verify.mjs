@@ -13,7 +13,7 @@ try {
   await desktop.waitForTimeout(1800);
   await desktop.screenshot({ path: 'artifacts/hero-desktop.png' });
   assert.equal(await desktop.locator('h1').innerText(), 'Seu corpo.\nSeu movimento.\nSua liberdade.');
-  assert.equal(await desktop.locator('.pin-spacer').count(), 1);
+  assert.equal(await desktop.locator('.pin-spacer').count(), 2);
   const before = await desktop.locator('.portrait-scroll').evaluate(el => el.getBoundingClientRect().left);
   await desktop.evaluate(() => window.scrollTo({ top: 600, behavior: 'instant' }));
   await desktop.waitForTimeout(1500);
@@ -48,6 +48,15 @@ try {
   await desktop.waitForTimeout(1500);
   assert.ok(Math.abs(await desktop.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top)) < 2, 'Treatment must reach top at end of transition');
   await desktop.screenshot({ path: 'artifacts/treatments-covered.png' });
+  const titleTop = await desktop.locator('#treatment-title').evaluate(el => el.getBoundingClientRect().top);
+  await desktop.evaluate(() => window.scrollTo({ top: 3800, behavior: 'instant' }));
+  await desktop.waitForTimeout(1200);
+  assert.ok(Math.abs(await desktop.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top)) < 2, 'Treatment must hold framing briefly at top');
+  assert.ok(Math.abs(titleTop - await desktop.locator('#treatment-title').evaluate(el => el.getBoundingClientRect().top)) < 2, 'Treatment content must remain still during hold');
+  await desktop.screenshot({ path: 'artifacts/treatments-hold.png' });
+  await desktop.evaluate(() => window.scrollTo({ top: 4100, behavior: 'instant' }));
+  await desktop.waitForTimeout(1200);
+  assert.ok(await desktop.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top < -100), 'Treatment must release after short hold');
   await desktop.evaluate(() => window.scrollTo({ top: 2500, behavior: 'instant' }));
   await desktop.waitForTimeout(1500);
   assert.ok(await desktop.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top > innerHeight), 'Reversing scroll must uncover previous section');

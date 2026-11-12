@@ -70,6 +70,16 @@ export default function Home() {
           // section travels upward over it for one full viewport of scrolling.
           const chapterDuration = scroll.duration();
           scroll.to('.hero-shade', { opacity: 0.3, duration: chapterDuration / 3, ease: 'none' });
+          ScrollTrigger.create({
+            id: 'treatment-hold',
+            trigger: '#tratamentos',
+            start: 'top top',
+            end: () => `+=${Math.min(420, window.innerHeight * 0.35)}`,
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          });
         });
         media.add('(max-width: 899px)', () => {
           gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
