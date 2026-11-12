@@ -12,6 +12,29 @@ function Arrow({ diagonal = false, ...props }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" {...props}><path d={diagonal ? 'M5 19 19 5M5 5h14v14' : 'M4 12h15m-6-6 6 6-6 6'} /></svg>;
 }
 
+function TreatmentIcon({ kind }) {
+  const paths = {
+    assessment: <><rect x="6" y="5" width="20" height="24" rx="3" /><path d="M12 5V3h8v2M11 13h10M11 19h6M11 24h9" /></>,
+    hands: <><path d="m5 18 5-5c2-2 4-2 6 0l2 2m-13 3 7 9c2 2 4 2 6 0l8-9M2 16l5 5M30 16l-5 5M13 14l4-4c1-1 3-1 4 0l6 6-6 6c-1 1-2 1-3 0l-5-5c-1-1-1-2 0-3Z" /></>,
+    movement: <><circle cx="20" cy="5" r="2.5" /><path d="m9 13 6-4 6 4h7M16 10l-4 10 6 3 2 7M12 20l-7 7M9 6H4M7 13H2" /></>,
+    listening: <><path d="M10 12a7 7 0 0 1 14 0c0 6-7 6-7 11 0 3-4 6-7 2M15 13a3 3 0 0 1 6 0c0 2-4 3-4 6M5 9c-2 4-2 8 0 12" /></>,
+    guidance: <><path d="M5 5h22v17H15l-7 6v-6H5V5ZM10 11h12M10 16h8" /></>,
+    personal: <><circle cx="16" cy="9" r="5" /><path d="M6 29v-3a10 10 0 0 1 20 0v3M23 17h7M26.5 13.5v7" /></>,
+  };
+  return <svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[kind]}</svg>;
+}
+
+const treatmentHighlights = [
+  { kind: 'assessment', title: 'Avaliação individual', text: 'Entender suas queixas, sua rotina e como você se movimenta é o ponto de partida.' },
+  { kind: 'hands', title: 'Fisioterapia manipulativa', text: 'Uma abordagem manual que considera suas necessidades e a avaliação do seu corpo.' },
+  { kind: 'movement', title: 'Movimento e função', text: 'Atenção aos movimentos que fazem diferença para você nas atividades do dia a dia.' },
+];
+const careHighlights = [
+  { kind: 'listening', title: 'Escuta atenta', text: 'Espaço para falar sobre o que você sente e o que deseja retomar na sua rotina.' },
+  { kind: 'guidance', title: 'Orientações claras', text: 'Uma conversa acessível sobre o cuidado e os próximos passos do atendimento.' },
+  { kind: 'personal', title: 'Cuidado individualizado', text: 'Suas necessidades e seus limites são parte da conversa em cada etapa.' },
+];
+
 export default function Home() {
   const root = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,6 +73,10 @@ export default function Home() {
           gsap.from('.help-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
           gsap.from('.about-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#sobre', start: 'top 82%', toggleActions: 'play none none reverse' } });
         });
+        root.current.querySelectorAll('.treatment-row').forEach(row => {
+          gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 35, autoAlpha: 0, duration: 0.85, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
+        });
+        gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: 1 } });
       });
     }, root);
     return () => { media.revert(); ctx.revert(); };
@@ -96,7 +123,7 @@ export default function Home() {
         <div className="portrait-scroll"><div className="portrait-entrance"><Image src="/images/rudy-recorte.png" alt="Rudy Mollick de jaleco, segurando um modelo anatômico da coluna vertebral" width={1092} height={1441} className="rudy-portrait" sizes="(max-width: 899px) 90vw, 53vw" priority /></div></div>
         <div className="portrait-caption"><span className="caption-cross" aria-hidden="true">+</span><div><strong>Rudy Mollick</strong><span>Fisioterapia Manipulativa</span></div></div>
         <div className="hero-shade" aria-hidden="true" />
-        <div className="hero-footer flex items-center justify-between"><a href="#cuidado" onClick={goToHelp} className="scroll-cue"><span className="scroll-mouse" aria-hidden="true"><span /></span> CONTINUE O MOVIMENTO <span aria-hidden="true">↓</span></a><span className="hero-footer-note">CIÊNCIA NO CUIDADO. <span>PRESENÇA EM CADA MOVIMENTO.</span></span><span className="chapter-index">01 <span>/ 04</span></span></div>
+        <div className="hero-footer flex items-center justify-between"><a href="#cuidado" onClick={goToHelp} className="scroll-cue"><span className="scroll-mouse" aria-hidden="true"><span /></span> CONTINUE O MOVIMENTO <span aria-hidden="true">↓</span></a><span className="hero-footer-note">CIÊNCIA NO CUIDADO. <span>PRESENÇA EM CADA MOVIMENTO.</span></span><span className="chapter-index">01 <span>/ 05</span></span></div>
       </section>
       <section id="cuidado" className="help-panel" aria-labelledby="help-title">
         <p className="help-reveal section-label">02 — COMO POSSO TE AJUDAR</p>
@@ -111,12 +138,41 @@ export default function Home() {
         <p className="about-reveal help-intro">Fisioterapeuta com atuação em fisioterapia manipulativa. Um cuidado que olha para a pessoa, para sua rotina e para os movimentos que fazem parte da sua vida.</p>
         <p className="about-reveal about-description">A escuta é o começo dessa relação: entender o que você sente, conhecer suas dificuldades e conversar sobre os próximos passos do seu atendimento.</p>
         <div className="about-reveal about-signature"><span>Rudy Mollick</span><p>FISIOTERAPIA MANIPULATIVA</p></div>
-        <div className="about-reveal"><a href="#contato" className="text-link">Converse com o Rudy <Arrow diagonal /></a></div>
+        <div className="about-reveal"><a href="#tratamentos" className="text-link">Conheça o tratamento <Arrow diagonal /></a></div>
       </section>
       </div>
     </div>
 
-    <section id="contato" className="contact-section"><p className="section-label">04 — SEU PRIMEIRO PASSO</p><h2>O que te move<br /><em>faz falta.</em></h2><p>Converse com Rudy sobre o seu atendimento.</p><motion.a className="primary-button" href="https://rudymollick.com.br/" whileHover={reducedMotion ? {} : { y: -3 }}>Acessar os canais de atendimento <span><Arrow diagonal /></span></motion.a><span className="contact-note">Você será direcionado ao site oficial do Rudy.</span></section>
+    <section id="tratamentos" className="treatment-section" aria-labelledby="treatment-title">
+      <div className="treatment-atmosphere" aria-hidden="true"><div className="treatment-ring" /><div className="treatment-ring treatment-ring-inner" /></div>
+      <div className="treatment-content">
+        <div className="treatment-row treatment-row-top grid gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="treatment-reveal treatment-intro">
+            <p className="section-label">04 — TRATAMENTO ESPECIALIZADO</p>
+            <h2 id="treatment-title">O cuidado certo.<br /><em>Para o seu movimento.</em></h2>
+            <p>Seu corpo merece um olhar individual. A <strong>fisioterapia manipulativa</strong> faz parte de um cuidado que começa pela avaliação e considera o que você precisa no dia a dia.</p>
+            <p>Da primeira conversa aos próximos passos, você participa do seu cuidado.</p>
+            <motion.a href="#contato" className="treatment-button" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.98 }}>Conversar sobre meu atendimento <Arrow diagonal /></motion.a>
+          </div>
+          <div className="treatment-features grid gap-9 sm:grid-cols-3 sm:gap-6">
+            {treatmentHighlights.map(item => <article key={item.kind} className="treatment-reveal treatment-feature"><TreatmentIcon kind={item.kind} /><h3>{item.title}</h3><p>{item.text}</p></article>)}
+          </div>
+        </div>
+        <div className="treatment-row treatment-row-bottom grid gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="treatment-features grid gap-9 sm:grid-cols-3 sm:gap-6">
+            {careHighlights.map(item => <article key={item.kind} className="treatment-reveal treatment-feature"><TreatmentIcon kind={item.kind} /><h3>{item.title}</h3><p>{item.text}</p></article>)}
+          </div>
+          <div className="treatment-reveal treatment-summary">
+            <span className="treatment-small-label">CADA PESSOA, UM PONTO DE PARTIDA.</span>
+            <h3>Como funciona<br /><em>o seu cuidado?</em></h3>
+            <p>Primeiro, uma conversa sobre você. Depois, uma avaliação para compreender suas necessidades e orientar o atendimento. O caminho é construído respeitando sua realidade.</p>
+            <motion.a href="#contato" className="treatment-button" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.98 }}>Dar o primeiro passo <Arrow diagonal /></motion.a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" className="contact-section"><p className="section-label">05 — SEU PRIMEIRO PASSO</p><h2>O que te move<br /><em>faz falta.</em></h2><p>Converse com Rudy sobre o seu atendimento.</p><motion.a className="primary-button" href="https://rudymollick.com.br/" whileHover={reducedMotion ? {} : { y: -3 }}>Acessar os canais de atendimento <span><Arrow diagonal /></span></motion.a><span className="contact-note">Você será direcionado ao site oficial do Rudy.</span></section>
     <footer className="site-footer flex flex-wrap items-center justify-between gap-5"><span>RUDY MOLLICK <span className="footer-divider">/</span> FISIOTERAPIA</span><a href="#inicio">Voltar ao início ↑</a></footer>
   </main>;
 }

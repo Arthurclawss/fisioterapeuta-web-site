@@ -15,6 +15,7 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 - Em telas menores, o parallax é leve e não prende a rolagem.
 - Framer Motion controla os botões e a abertura/saída do menu móvel, em elementos separados das transformações de GSAP.
 - `prefers-reduced-motion` desativa as animações e preserva todo o conteúdo.
+- A seção 04, “Tratamento especializado”, usa duas linhas alternadas de apresentação e seis destaques com ícones. Os blocos entram com GSAP/ScrollTrigger e o fundo acompanha a rolagem com parallax leve. Em telas menores, a composição vira uma coluna.
 
 ## Conteúdo e imagens
 

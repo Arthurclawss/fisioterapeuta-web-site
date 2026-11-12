@@ -36,6 +36,15 @@ try {
   assert.ok(Number(await desktop.locator('.about-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
   assert.ok(Math.abs(finalPhotoX - await desktop.locator('.portrait-scroll').evaluate(el => el.getBoundingClientRect().left)) < 2, 'Portrait must remain in same position for about section');
   await desktop.screenshot({ path: 'artifacts/about-desktop.png' });
+  await desktop.locator('.about-panel .text-link').click();
+  await desktop.waitForTimeout(2000);
+  assert.equal(new URL(desktop.url()).hash, '#tratamentos');
+  assert.ok(await desktop.locator('#tratamentos').evaluate(el => el.getBoundingClientRect().top < innerHeight));
+  assert.equal(await desktop.locator('.treatment-feature').count(), 6);
+  await desktop.screenshot({ path: 'artifacts/treatments-desktop.png' });
+  await desktop.locator('.treatment-intro .treatment-button').click();
+  await desktop.waitForTimeout(1400);
+  assert.equal(new URL(desktop.url()).hash, '#contato');
   await desktop.evaluate(() => window.scrollTo({ top: 1150, behavior: 'instant' }));
   await desktop.waitForTimeout(1500);
   assert.ok(Number(await desktop.locator('.help-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
@@ -72,12 +81,18 @@ try {
   await mobile.waitForTimeout(1600);
   assert.ok(Number(await mobile.locator('.about-panel h2').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
   await mobile.screenshot({ path: 'artifacts/about-mobile.png' });
+  await mobile.locator('.about-panel .text-link').click();
+  await mobile.waitForTimeout(1800);
+  assert.ok(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  assert.ok(Number(await mobile.locator('.treatment-intro').evaluate(el => getComputedStyle(el).opacity)) > 0.95);
+  await mobile.screenshot({ path: 'artifacts/treatments-mobile.png' });
 
   const reduced = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   await reduced.goto('http://localhost:3000', { waitUntil: 'networkidle' });
   assert.equal(await reduced.locator('.pin-spacer').count(), 0);
   assert.equal(await reduced.locator('.title-line').first().evaluate(el => getComputedStyle(el).opacity), '1');
   assert.equal(await reduced.locator('.about-panel').evaluate(el => getComputedStyle(el).visibility), 'visible');
+  assert.equal(await reduced.locator('.treatment-intro').evaluate(el => getComputedStyle(el).visibility), 'visible');
   assert.deepEqual(errors, []);
   console.log('PASS: desktop, help/about sequence, stationary portrait, reverse scroll, chapter navigation, CTA, mobile, reduced motion, no runtime errors.');
 } finally { await browser.close(); }
