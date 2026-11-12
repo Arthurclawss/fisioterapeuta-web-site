@@ -71,7 +71,7 @@ export default function Home() {
           scroll.to('.hero-copy', { y: -45, autoAlpha: 0, duration: 0.22 }, 0)
             .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -20, duration: 0.2 }, 0)
             .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', duration: 0.65, ease: 'power2.inOut' }, 0.2)
-            .to('.backdrop-word', { xPercent: -30, autoAlpha: 0.25, duration: 0.85 }, 0)
+            .to('.scene-watermark-layer', { xPercent: -4, duration: 0.85 }, 0)
             .to('.orbit', { x: '-35vw', rotation: 30, duration: 0.85 }, 0)
             .fromTo('.help-panel', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.88)
             .fromTo('.help-reveal', { y: 35, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.09, ease: 'power2.out' }, 0.9)
@@ -99,7 +99,7 @@ export default function Home() {
         });
         media.add('(max-width: 899px)', () => {
           gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
-          gsap.to('.backdrop-word', { xPercent: -12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.8 } });
+          gsap.to('.scene-watermark-layer', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.8 } });
           gsap.from('.help-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
           gsap.from('.about-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#sobre', start: 'top 82%', toggleActions: 'play none none reverse' } });
         });
@@ -141,7 +141,7 @@ export default function Home() {
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-glow" aria-hidden="true" />
         <div className="orbit orbit-one" aria-hidden="true" /><div className="orbit orbit-two" aria-hidden="true" />
-        <span className="backdrop-word" aria-hidden="true">MOVIMENTO</span>
+        <div className="scene-watermark-layer" aria-hidden="true"><Image src="/images/rudy-logo.png" width={2167} height={726} alt="" className="scene-watermark" sizes="115vw" /></div>
         <div className="hero-copy">
           <p className="hero-eyebrow flex items-center gap-3"><span className="status-dot" /> FISIOTERAPIA COM RUDY MOLLICK</p>
           <h1 id="hero-title"><span className="title-line">Seu corpo.</span><span className="title-line">Seu movimento.</span><span className="title-line title-accent">Sua liberdade.</span></h1>

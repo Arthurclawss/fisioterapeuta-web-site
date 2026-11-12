@@ -23,6 +23,8 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Conteúdo e imagens
 
+O logo aparece ampliado como marca-d’água no fundo da cena principal, com opacidade de 8,5% e parallax discreto. É decorativo, fica atrás da foto e dos textos, e não intercepta cliques.
+
 Os PNGs com transparência estão em `public/images`. Foram preparados com edição por IA a partir dos arquivos enviados; revisar detalhes de marca e rosto antes de publicar.
 
 O botão de atendimento leva ao site oficial porque o WhatsApp ainda não foi confirmado. A hero principal é acompanhada de duas seções curtas para demonstrar a transição na rolagem. Não há envio de formulário nem coleta de dados.
