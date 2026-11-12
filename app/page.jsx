@@ -77,6 +77,7 @@ export default function Home() {
             .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -12, duration: 0.28, ease: 'sine.inOut' }, 0)
             .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', force3D: true, duration: 0.79, ease: 'sine.inOut' }, 0.06)
             .to('.scene-watermark-layer', { xPercent: -4, duration: 0.85, ease: 'sine.inOut' }, 0)
+            .to('.scene-watermark', { opacity: 0.035, duration: 0.85, ease: 'sine.inOut' }, 0)
             .to('.orbit', { x: '-35vw', rotation: 30, duration: 0.85, ease: 'sine.inOut' }, 0)
             .fromTo('.help-panel', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.88)
             .fromTo('.help-reveal', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, force3D: true, duration: 0.42, stagger: 0.065, ease: 'sine.out' }, 0.9)

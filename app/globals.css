@@ -25,15 +25,33 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--cyan); outline-
 .help-panel .section-label, .about-panel .section-label { margin-bottom: 25px; color: var(--cyan); }
 .help-panel h2, .about-panel h2 { font-size: clamp(42px, 4.5vw, 72px); }
 .about-panel h2 { font-size: clamp(38px, 4vw, 65px); }
-.about-description { color:#a8bdc5; font-size:14px; line-height:1.9; margin-bottom:25px; max-width:430px; }
+.about-description { color:#d4e2e8; font-size:clamp(16px,1.05vw,18px); line-height:1.75; margin-bottom:28px; max-width:480px; }
 .about-signature { border-top:1px solid #a5dce426; padding-top:22px; margin-bottom:27px; }
 .about-signature>span { font-family:Georgia,serif; color:var(--cyan); font-size:25px; font-style:italic; }
-.about-signature>p { color:#8daab5; font-size:8px; letter-spacing:.16em; margin-top:8px; }
-.help-intro { margin: 23px 0; max-width: 410px; color: #a8bdc5; font-size: 14px; line-height: 1.9; }
+.about-signature>p { color:#bdd3de; font-size:11px; letter-spacing:.12em; margin-top:8px; }
+.help-intro { margin: 25px 0; max-width: 480px; color: #d4e2e8; font-size:clamp(16px,1.05vw,18px); line-height:1.75; }
 .help-topics { list-style: none; padding: 0; margin: 0 0 28px; }
-.help-topics li { border-top: 1px solid #a5dce426; padding: 17px 0; font-size: 13px; color: #d0dfe3; }
+.help-topics li { display:flex; align-items:baseline; border-top:1px solid #a5dce435; padding:18px 0; font-size:16px; line-height:1.6; color:#edf4f6; }
 .help-topics li:last-child { border-bottom: 1px solid #a5dce426; }
-.help-topics li span { display: inline-block; color: var(--cyan); font-size: 9px; margin-right: 20px; }
+.help-topics li span { flex-shrink:0; display:inline-block; color:var(--cyan); font-size:11px; margin-right:20px; }
+.help-panel .text-link, .about-panel .text-link { min-height:44px; font-size:14px; font-weight:500; color:#e1edf1; gap:16px; }
+.help-panel .text-link svg, .about-panel .text-link svg { color:var(--cyan); flex-shrink:0; }
+@media (min-width:900px) {
+  .help-panel, .about-panel { isolation:isolate; }
+  .help-panel::before, .about-panel::before { content:""; position:absolute; z-index:-1; inset:-35px -40px -30px -55px; pointer-events:none; background:radial-gradient(ellipse at 55% 55%,#07171fa6 0%,#07171f80 50%,transparent 78%); }
+}
+@media (min-width:900px) and (max-width:1100px) {
+  .help-panel, .about-panel { top:15%; left:54%; width:40%; }
+}
+@media (min-width:900px) and (max-height:850px) {
+  .help-panel, .about-panel { top:14%; }
+  .help-panel h2 { font-size:clamp(38px,4vw,60px); }
+  .about-panel h2 { font-size:clamp(34px,3.65vw,54px); }
+  .help-intro { margin:18px 0; line-height:1.65; }
+  .about-description { line-height:1.65; margin-bottom:18px; }
+  .help-topics li { padding:14px 0; }
+  .about-signature { padding-top:16px; margin-bottom:18px; }
+}
 @media (min-width:900px) and (prefers-reduced-motion:no-preference) { .help-panel, .about-panel { visibility:hidden; } }
 @media (max-width:899px), (prefers-reduced-motion:reduce) {
   .help-panel, .about-panel { position:relative; top:auto; left:auto; width:auto; padding:75px 7%; background:#0a1e27; }
