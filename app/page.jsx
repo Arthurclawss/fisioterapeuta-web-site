@@ -51,7 +51,7 @@ export default function Home() {
 
         media.add('(min-width: 900px)', () => {
           const portrait = root.current.querySelector('.portrait-scroll');
-          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=300%', scrub: 0.8, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
+          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: 0.8, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
           scroll.to('.hero-copy', { y: -45, autoAlpha: 0, duration: 0.22 }, 0)
             .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -20, duration: 0.2 }, 0)
             .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', duration: 0.65, ease: 'power2.inOut' }, 0.2)
@@ -66,6 +66,10 @@ export default function Home() {
             .fromTo('.about-reveal', { y: 35, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.09, ease: 'power2.out' }, 2.46)
             .addLabel('about', 3.2)
             .to({}, { duration: 0.35 });
+          // Keep the existing chapter timing, then hold the scene while the next
+          // section travels upward over it for one full viewport of scrolling.
+          const chapterDuration = scroll.duration();
+          scroll.to('.hero-shade', { opacity: 0.3, duration: chapterDuration / 3, ease: 'none' });
         });
         media.add('(max-width: 899px)', () => {
           gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });

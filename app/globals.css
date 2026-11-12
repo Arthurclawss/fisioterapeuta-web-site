@@ -18,6 +18,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--cyan); outline-
 .site-header nav a:hover { color: var(--cyan); }
 .nav-cta { display: flex; align-items: center; gap: 24px; border: 1px solid #acd9e43d; padding: 14px 22px; border-radius: 2px; }
 .hero { position: relative; height: max(800px, 100svh); max-height: 1150px; overflow: hidden; isolation: isolate; background: #07171f; }
+.hero-stage { position:relative; z-index:1; }
 .hero-scene { position: relative; }
 .help-panel, .about-panel { position: absolute; z-index: 12; top: 21%; left: 56%; width: 36%; }
 .help-panel .section-label, .about-panel .section-label { margin-bottom: 25px; color: var(--cyan); }
@@ -79,7 +80,10 @@ h2 { font-family: Georgia,serif; font-size: clamp(40px,5vw,76px); line-height: 1
 h2 em { color: var(--cyan); font-weight: 400; }
 .care-copy>p { color: #9ab3be; font-size: 15px; line-height: 1.95; margin: 0 0 26px; }
 .care-bottom { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid #a5dce420; padding: 28px 0; color: #92aeb8; font-size: 10px; letter-spacing: .17em; }
-.treatment-section { position:relative; isolation:isolate; overflow:hidden; padding:95px 5.5% 90px; background:#06141b; border-top:1px solid #9ce8ef16; }
+.treatment-section { position:relative; z-index:20; isolation:isolate; overflow:hidden; padding:95px 5.5% 90px; background:#06141b; border-top:1px solid #9ce8ef16; }
+@media (min-width:900px) and (prefers-reduced-motion:no-preference) {
+  .treatment-section { margin-top:calc(-1 * clamp(800px, 100svh, 1150px)); min-height:100svh; box-shadow:0 -35px 90px #0005; }
+}
 .treatment-content { position:relative; z-index:1; max-width:1600px; margin-inline:auto; }
 .treatment-atmosphere { position:absolute; inset:-15% 0; z-index:0; pointer-events:none; background:radial-gradient(ellipse at 57% 23%,#1e596951,transparent 44%),linear-gradient(180deg,#07171f00 15%,#06141b 85%); }
 .treatment-atmosphere::before { content:''; position:absolute; inset:0; background-image:linear-gradient(115deg,transparent 48%,#9aeaf508 49%,transparent 50%),linear-gradient(#a9e9ef05 1px,transparent 1px); background-size:450px 100%,100% 110px; mask-image:linear-gradient(transparent,#000 25%,transparent 85%); }
