@@ -38,21 +38,22 @@ export default function ClosingSections() {
         <p className="section-label patient-kicker">05 — EXPERIÊNCIAS E DÚVIDAS</p>
         <div className="patient-grid">
           <div className="testimonial-column">
-            <h2 id="patient-title">Cada pessoa,<br /><em>uma história.</em></h2>
-            <p className="patient-intro">Escutar faz parte do cuidado. Conheça este espaço dedicado às experiências dos pacientes.</p>
+            <h2 id="patient-title">O que dizem<br /><em>os pacientes.</em></h2>
+            <p className="patient-intro">Conheça as experiências de quem já foi atendido pelo Dr. Rudy, nas avaliações publicadas no Google.</p>
             <div className="testimonial-card">
-              <div className="testimonial-card-top"><span className="quote-mark" aria-hidden="true">“</span><span className="demo-label">DEPOIMENTOS ILUSTRATIVOS</span></div>
+              <div className="testimonial-card-top"><span className="quote-mark" aria-hidden="true">“</span><span className="review-source">AVALIAÇÕES NO GOOGLE</span></div>
               <div className="testimonial-live" aria-live="polite" aria-atomic="true">
                 <AnimatePresence mode="wait" initial={false}>
-                  <motion.div key={quoteIndex} initial={{ opacity: 0, x: reduced ? 0 : 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: reduced ? 0 : -12 }} transition={{ duration: reduced ? 0 : 0.2 }}>
+                  <motion.div key={quoteIndex} initial={{ opacity: 0, x: reduced ? 0 : 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: reduced ? 0 : -12 }} transition={{ duration: reduced ? 0 : 0.2 }} onAnimationComplete={refresh}>
+                    <span className="review-stars" role="img" aria-label={`${quote.rating} de 5 estrelas`}><span aria-hidden="true">{'★'.repeat(quote.rating)}</span></span>
                     <blockquote>{quote.quote}</blockquote>
-                    <div className="testimonial-person"><span className="testimonial-avatar" aria-hidden="true">{quote.initials}</span><div><strong>{quote.name}</strong><span>Personagem fictício · exemplo de relato</span></div></div>
+                    <div className="testimonial-person"><span className="testimonial-avatar" aria-hidden="true">{quote.initials}</span><div><strong>{quote.name}</strong><span>Avaliação publicada no Google</span></div></div>
                   </motion.div>
                 </AnimatePresence>
               </div>
               <div className="testimonial-controls"><span>0{quoteIndex + 1}<span> / 0{testimonials.length}</span></span><div><button type="button" aria-label="Depoimento anterior" onClick={() => setQuoteIndex((quoteIndex + testimonials.length - 1) % testimonials.length)}>←</button><button type="button" aria-label="Próximo depoimento" onClick={() => setQuoteIndex((quoteIndex + 1) % testimonials.length)}>→</button></div></div>
             </div>
-            <p className="testimonial-note">Relatos fictícios usados apenas para apresentar o layout.</p>
+            <p className="testimonial-note">Relatos individuais de pacientes. Cada experiência de cuidado é única.</p>
           </div>
           <div id="duvidas" className="faq-column">
             <span className="small-eyebrow">PERGUNTAS FREQUENTES</span>
@@ -63,7 +64,7 @@ export default function ClosingSections() {
                 <AnimatePresence initial={false}>{openFaq === index && <motion.div id={`faq-answer-${index}`} role="region" aria-labelledby={`faq-question-${index}`} className="faq-answer" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: reduced ? 0 : 0.25 }} onAnimationComplete={refresh}><p>{faq.answer}</p></motion.div>}</AnimatePresence>
               </div>)}
             </div>
-            <a href="#contato" className="text-link faq-contact">Ainda ficou com alguma dúvida? <Arrow /></a>
+            <button type="button" className="primary-button faq-contact" onClick={whatsapp}>Falar com o Dr. Rudy no WhatsApp <span><Arrow /></span></button>
           </div>
         </div>
         <div className="patient-bottom"><span>O PRÓXIMO PASSO COMEÇA COM UMA CONVERSA.</span><a href="#contato">ENCONTRE O RUDY <span aria-hidden="true">↓</span></a></div>
@@ -81,7 +82,7 @@ export default function ClosingSections() {
               <h2 id="contact-title">Seu próximo<br />movimento<br /><em>começa aqui.</em></h2>
               <p>Uma conversa para entender você.<br />Um primeiro passo para o seu cuidado.</p>
               <button type="button" className="primary-button contact-whatsapp" onClick={whatsapp}>Conversar pelo WhatsApp <span><Arrow /></span></button>
-              <span className="contact-demo-note">WhatsApp demonstrativo · {contact.whatsappLabel}</span>
+              <span className="contact-demo-note">WhatsApp · {contact.whatsappLabel}</span>
             </div>
             <div className="contact-location">
               <div className="map-frame">

@@ -30,7 +30,7 @@ try {
   await page.waitForTimeout(1500);
   assert.equal(new URL(page.url()).hash, '#contato');
   assert.ok(Math.abs(await page.locator('.closing-scene').evaluate(el => el.getBoundingClientRect().top)) < 3);
-  await page.getByRole('button', { name: 'Conversar pelo WhatsApp' }).click();
+  await page.locator('dialog').evaluate(el => el.showModal());
   const beforeModalWheel = await page.evaluate(() => scrollY);
   await page.mouse.wheel(0, 300);
   await page.waitForTimeout(500);

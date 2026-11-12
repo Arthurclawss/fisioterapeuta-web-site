@@ -9,12 +9,25 @@ try {
   await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
   await page.locator('#depoimentos').scrollIntoViewIfNeeded();
   await page.waitForTimeout(1500);
-  assert.equal(await page.locator('.demo-label').innerText(), 'DEPOIMENTOS ILUSTRATIVOS');
-  assert.match(await page.locator('.testimonial-person').innerText(), /fictício/);
+  assert.equal(await page.locator('.review-source').innerText(), 'AVALIAÇÕES NO GOOGLE');
+  assert.match(await page.locator('.testimonial-person').innerText(), /Milena Assis/);
+  assert.ok(await page.getByRole('img', { name: '5 de 5 estrelas' }).isVisible());
+  assert.equal(await page.locator('#patient-title').innerText(), 'O que dizem\nos pacientes.');
+  // Capture the destination without navigating to or contacting WhatsApp.
+  await page.evaluate(() => { window.open = url => { window.contactDestination = url; return null; }; });
+  await page.getByRole('button', { name: 'Falar com o Dr. Rudy no WhatsApp' }).click();
+  assert.equal(await page.evaluate(() => window.contactDestination), 'https://wa.me/558488734892');
   const firstQuote = await page.locator('blockquote').innerText();
   await page.getByRole('button', { name: 'Próximo depoimento' }).click();
   await page.waitForTimeout(600);
   assert.notEqual(await page.locator('blockquote').innerText(), firstQuote);
+  assert.match(await page.locator('.testimonial-person').innerText(), /Ricardo Addario/);
+  await page.getByRole('button', { name: 'Próximo depoimento' }).click();
+  await page.waitForTimeout(600);
+  assert.match(await page.locator('.testimonial-person').innerText(), /Marreiros Almeida/);
+  assert.match(await page.locator('blockquote').innerText(), /Indico a todos/);
+  await page.getByRole('button', { name: 'Depoimento anterior' }).click();
+  await page.waitForTimeout(600);
   await page.getByRole('button', { name: 'Depoimento anterior' }).click();
   await page.waitForTimeout(600);
   assert.equal(await page.locator('blockquote').innerText(), firstQuote);
@@ -65,12 +78,8 @@ try {
   await page.screenshot({ path: 'artifacts/contact-footer-desktop.png' });
   assert.match(await page.locator('address').innerText(), /Walter Duarte Pereira, 1620/);
   assert.match(await page.locator('.footer-instagram').getAttribute('href'), /instagram.com\/dr.rudymollick/);
-  assert.equal(await page.locator('a[href^="https://wa.me"]').count(), 0, 'Fictitious number must never route to a real recipient');
   await page.getByRole('button', { name: 'Conversar pelo WhatsApp' }).click();
-  assert.ok(await page.locator('dialog').evaluate(el => el.open));
-  assert.match(await page.locator('dialog').innerText(), /demonstrativo/);
-  await page.keyboard.press('Escape');
-  assert.equal(await page.locator('dialog').evaluate(el => el.open), false);
+  assert.equal(await page.evaluate(() => window.contactDestination), 'https://wa.me/558488734892');
   await page.route('https://maps.google.com/**', route => route.fulfill({ contentType: 'text/html', body: '<html><body>Embedded map test</body></html>' }));
   await page.getByRole('button', { name: 'Carregar mapa do Google' }).click();
   assert.match(decodeURIComponent(await page.locator('.map-frame iframe').getAttribute('src')), /Rua Walter Duarte Pereira, 1620/);
@@ -98,5 +107,5 @@ try {
   assert.equal(await page.locator('.pin-spacer').count(), 0);
   assert.equal(await page.locator('.closing-shell').evaluate(el => getComputedStyle(el).marginTop), '0px');
   assert.deepEqual(errors, []);
-  console.log('PASS: illustrative testimonials, carousel, FAQ, inverse curtain and layer order, contact navigation, demo WhatsApp, map integration, privacy, mobile and reduced motion.');
+  console.log('PASS: supplied Google reviews, individual ratings, prominent FAQ CTA, carousel, FAQ, inverse curtain, contact navigation, supplied WhatsApp, map, privacy, mobile and reduced motion.');
 } finally { await browser.close(); }
