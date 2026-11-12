@@ -15,6 +15,8 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Efeitos
 
+- Os títulos usam adaptações dos efeitos [Fold Text](https://reactbits.dev/text-animations/fold-text) e [Split Text](https://reactbits.dev/text-animations/split-text). A dobra em perspectiva aparece na hero e na frase final de agendamento; o plugin GSAP SplitText divide os títulos de cuidado, apresentação, depoimentos e FAQ em palavras. As mesmas timelines controlam texto e cenas, sem animações concorrentes. A seção 04 mantém a entrada por palavras e seu atraso de chegada. Sem JavaScript ou com movimento reduzido, o texto permanece legível.
+
 - GSAP controla a entrada de texto e foto. ScrollTrigger fixa a cena no desktop: o texto inicial sai, o retrato se desloca para a esquerda e, após a foto parar, entra o conteúdo de “Como posso te ajudar” à direita. Continuando a rolar, esse texto sai e dá lugar a “Conheça o Rudy”, mantendo a mesma imagem na mesma posição. Ao rolar de volta, a sequência se inverte.
 - Em telas menores, o parallax é leve e não prende a rolagem.
 - Framer Motion controla os botões e a abertura/saída do menu móvel, em elementos separados das transformações de GSAP.
@@ -28,9 +30,9 @@ Abra http://localhost:3000. Para gerar a versão estática: `npm run build` (sa�
 
 ## Conteúdo e imagens
 
-As seções 05 e 06 incluem depoimentos ilustrativos (fictícios, identificados na interface), perguntas frequentes em acordeão, mapa do Google sob demanda, endereço, Instagram, contato e rodapé. A seção 05 sobe sobre a cena de contato fixa, revelando-a por baixo no desktop; em celular, telas baixas e movimento reduzido, ambas seguem o fluxo normal.
+As seções 05 e 06 incluem três avaliações do Google transcritas das imagens fornecidas pelo proprietário, perguntas frequentes em acordeão, mapa do Google sob demanda, endereço, Instagram, contato e rodapé. A seção 05 sobe sobre a cena de contato fixa, revelando-a por baixo no desktop; em celular, telas baixas e movimento reduzido, ambas seguem o fluxo normal.
 
-Os dados ficam em `app/data/site-content.js`. O endereço e Instagram foram fornecidos pelo proprietário. O e-mail foi conferido no [perfil público do Rudy](https://linktr.ee/Dr.rudymollick). O WhatsApp permanece deliberadamente sem número roteável: o botão abre um aviso com o Instagram oficial. Para ativá-lo, preencha `contact.whatsapp` com o número real no formato internacional. Horários, registro profissional, duração e pagamento ainda dependem de confirmação; não foram inventados. Substitua os relatos ilustrativos por depoimentos reais autorizados antes de usá-los como prova social.
+Os dados ficam em `app/data/site-content.js`. O endereço, Instagram e WhatsApp temporário foram fornecidos pelo proprietário. O e-mail foi conferido no [perfil público do Rudy](https://linktr.ee/Dr.rudymollick). Os botões do FAQ e agendamento abrem o número temporário; substitua `contact.whatsapp` e `contact.whatsappLabel` ao receber o contato definitivo do Rudy. Horários, registro profissional, duração e pagamento ainda dependem de confirmação.
 
 O mapa usa Google Maps Embed por endereço, sem chave de API, e só carrega após a escolha do visitante. A política de privacidade fica em `/privacidade` e descreve o comportamento desta versão, incluindo dados demonstrativos e serviços externos.
 
@@ -38,4 +40,4 @@ O logo aparece ampliado como marca-d’água no fundo da cena principal, com opa
 
 Os PNGs com transparência estão em `public/images`. Foram preparados com edição por IA a partir dos arquivos enviados; revisar detalhes de marca e rosto antes de publicar.
 
-O botão de atendimento leva ao site oficial porque o WhatsApp ainda não foi confirmado. A hero principal é acompanhada de duas seções curtas para demonstrar a transição na rolagem. Não há envio de formulário nem coleta de dados.
+Não há envio de formulário nem coleta de dados clínicos pelo site.

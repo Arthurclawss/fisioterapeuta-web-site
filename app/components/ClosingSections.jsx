@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { contact, faqs, testimonials } from '../data/site-content';
+import FoldText from './FoldText';
 
 function Arrow() {
   return <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>;
@@ -79,7 +80,7 @@ export default function ClosingSections() {
           <p className="section-label">06 — LOCALIZAÇÃO E AGENDAMENTO</p>
           <div className="contact-main-grid">
             <div className="contact-intro">
-              <h2 id="contact-title">Seu próximo<br />movimento<br /><em>começa aqui.</em></h2>
+              <h2 id="contact-title">Seu próximo<br />movimento<br /><em><FoldText text="começa aqui." /></em></h2>
               <p>Uma conversa para entender você.<br />Um primeiro passo para o seu cuidado.</p>
               <button type="button" className="primary-button contact-whatsapp" onClick={whatsapp}>Conversar pelo WhatsApp <span><Arrow /></span></button>
               <span className="contact-demo-note">WhatsApp · {contact.whatsappLabel}</span>

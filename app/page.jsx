@@ -7,6 +7,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SpotlightCard from './components/SpotlightCard';
 import ClosingSections from './components/ClosingSections';
+import FoldText from './components/FoldText';
+import { splitHeadings, foldFrom, foldTo } from './lib/text-effects';
 import { scrollToPosition } from './lib/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -61,8 +63,10 @@ export default function Home() {
     const media = gsap.matchMedia();
     const ctx = gsap.context(() => {
       media.add('(prefers-reduced-motion: no-preference)', () => {
+        const text = splitHeadings(container);
         gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .from('.hero-eyebrow, .title-line', { y: 65, autoAlpha: 0, duration: 1.05, stagger: 0.12 }, 0.1)
+          .from('.hero-eyebrow', { y: 24, autoAlpha: 0, duration: 0.75 }, 0.1)
+          .fromTo('.hero-copy .fold-piece', foldFrom, { ...foldTo, duration: 0.95, stagger: 0.065 }, 0.15)
           .from('.portrait-entrance', { y: 75, autoAlpha: 0, scale: 1.04, duration: 1.4 }, 0.2)
           .from('.hero-description, .hero-actions, .hero-footer', { y: 22, autoAlpha: 0, stagger: 0.12, duration: 0.75 }, 0.7);
 
@@ -76,11 +80,13 @@ export default function Home() {
             .to('.orbit', { x: '-35vw', rotation: 30, duration: 0.85, ease: 'sine.inOut' }, 0)
             .fromTo('.help-panel', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.88)
             .fromTo('.help-reveal', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, force3D: true, duration: 0.42, stagger: 0.065, ease: 'sine.out' }, 0.9)
+            .fromTo(text.help.words, { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: { amount: 0.16 }, ease: 'power2.out' }, 0.98)
             .addLabel('help', 1.65)
             .to('.help-reveal', { y: -25, autoAlpha: 0, duration: 0.24, stagger: 0.035 }, 2)
             .set('.help-panel', { autoAlpha: 0 }, 2.4)
             .fromTo('.about-panel', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 2.43)
             .fromTo('.about-reveal', { y: 35, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.09, ease: 'power2.out' }, 2.46)
+            .fromTo(text.about.words, { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.4, stagger: { amount: 0.14 }, ease: 'power2.out' }, 2.55)
             .addLabel('about', 3.2)
             .to({}, { duration: 0.35 });
           // Keep the existing chapter timing, then hold the scene while the next
@@ -113,6 +119,9 @@ export default function Home() {
           gsap.to('.scene-watermark-layer', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.25 } });
           gsap.from('.help-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
           gsap.from('.about-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#sobre', start: 'top 82%', toggleActions: 'play none none reverse' } });
+          for (const [heading, trigger] of [[text.help, '#cuidado'], [text.about, '#sobre']]) {
+            gsap.fromTo(heading.words, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.045, ease: 'power2.out', scrollTrigger: { trigger, start: 'top 82%', toggleActions: 'play none none reverse' } });
+          }
           root.current.querySelectorAll('.treatment-row').forEach(row => {
             gsap.from(row.querySelectorAll('.treatment-reveal'), { y: 30, autoAlpha: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: row, start: 'top 85%', toggleActions: 'play none none reverse' } });
           });
@@ -134,12 +143,24 @@ export default function Home() {
             .fromTo('.patient-kicker, .testimonial-column>h2, .patient-intro', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.045 }, 0)
             .fromTo('.testimonial-card, .testimonial-note', { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.04 }, 0.12)
             .fromTo('.faq-column', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55 }, 0.08);
+          const patientEntrance = ScrollTrigger.getById('patient-entrance').animation;
+          patientEntrance
+            .fromTo(text.patients.words, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: { amount: 0.12 } }, 0.08)
+            .fromTo(text.faq.words, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: { amount: 0.12 } }, 0.12);
           // Reveal the contact scene as a stationary surface. Transforming its
           // background exposed a dark strip below it during the curtain reveal.
           ScrollTrigger.create({
             id: 'closing-reveal', trigger: '.patient-stage', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, invalidateOnRefresh: true,
           });
+          gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 0.65, stagger: 0.08, scrollTrigger: { trigger: '.patient-stage', start: 'bottom 35%', end: 'bottom top', scrub: 0.18, invalidateOnRefresh: true } });
         });
+        media.add('(max-width: 899px), (max-height: 759px)', () => {
+          for (const heading of [text.patients, text.faq]) {
+            gsap.fromTo(heading.words, { yPercent: 35, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.045, scrollTrigger: { trigger: heading.elements[0], start: 'top 85%', toggleActions: 'play none none reverse' } });
+          }
+          gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 0.8, stagger: 0.08, scrollTrigger: { trigger: '#contact-title', start: 'top 85%', toggleActions: 'play none none reverse' } });
+        });
+        return () => text.revert();
       });
     }, root);
     return () => { media.revert(); ctx.revert(); container.classList.remove('motion-ready'); };
@@ -188,7 +209,7 @@ export default function Home() {
         <div className="scene-watermark-layer" aria-hidden="true"><Image src="/images/rudy-logo.png" width={2167} height={726} alt="" className="scene-watermark" sizes="115vw" /></div>
         <div className="hero-copy">
           <p className="hero-eyebrow flex items-center gap-3"><span className="status-dot" /> FISIOTERAPIA COM RUDY MOLLICK</p>
-          <h1 id="hero-title"><span className="title-line">Seu corpo.</span><span className="title-line">Seu movimento.</span><span className="title-line title-accent">Sua liberdade.</span></h1>
+          <h1 id="hero-title"><span className="title-line"><FoldText text="Seu corpo." /></span><span className="title-line"><FoldText text="Seu movimento." /></span><span className="title-line title-accent"><FoldText text="Sua liberdade." /></span></h1>
           <p className="hero-description">Volte a se conectar com o que te move.<br className="hidden md:block" /> Um cuidado individualizado, que começa por você.</p>
           <div className="hero-actions flex flex-wrap items-center gap-6">
             <motion.a href="#contato" className="primary-button" whileHover={reducedMotion ? {} : { y: -3 }} whileTap={reducedMotion ? {} : { scale: 0.97 }}>Quero dar o primeiro passo <span><Arrow diagonal /></span></motion.a>
