@@ -68,14 +68,14 @@ export default function Home() {
 
         media.add('(min-width: 900px)', () => {
           const portrait = root.current.querySelector('.portrait-scroll');
-          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: true, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
-          scroll.to('.hero-copy', { y: -45, autoAlpha: 0, duration: 0.22 }, 0)
-            .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -20, duration: 0.2 }, 0)
-            .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', duration: 0.65, ease: 'power2.inOut' }, 0.2)
-            .to('.scene-watermark-layer', { xPercent: -4, duration: 0.85 }, 0)
-            .to('.orbit', { x: '-35vw', rotation: 30, duration: 0.85 }, 0)
+          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: 0.22, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
+          scroll.to('.hero-copy', { y: -28, autoAlpha: 0, duration: 0.32, ease: 'sine.inOut' }, 0)
+            .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -12, duration: 0.28, ease: 'sine.inOut' }, 0)
+            .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', force3D: true, duration: 0.79, ease: 'sine.inOut' }, 0.06)
+            .to('.scene-watermark-layer', { xPercent: -4, duration: 0.85, ease: 'sine.inOut' }, 0)
+            .to('.orbit', { x: '-35vw', rotation: 30, duration: 0.85, ease: 'sine.inOut' }, 0)
             .fromTo('.help-panel', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.88)
-            .fromTo('.help-reveal', { y: 35, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.09, ease: 'power2.out' }, 0.9)
+            .fromTo('.help-reveal', { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, force3D: true, duration: 0.42, stagger: 0.065, ease: 'sine.out' }, 0.9)
             .addLabel('help', 1.65)
             .to('.help-reveal', { y: -25, autoAlpha: 0, duration: 0.24, stagger: 0.035 }, 2)
             .set('.help-panel', { autoAlpha: 0 }, 2.4)
