@@ -7,6 +7,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SpotlightCard from './components/SpotlightCard';
 import ClosingSections from './components/ClosingSections';
+import { scrollToPosition } from './lib/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,7 +64,7 @@ export default function Home() {
 
         media.add('(min-width: 900px)', () => {
           const portrait = root.current.querySelector('.portrait-scroll');
-          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: 0.8, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
+          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: true, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
           scroll.to('.hero-copy', { y: -45, autoAlpha: 0, duration: 0.22 }, 0)
             .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -20, duration: 0.2 }, 0)
             .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', duration: 0.65, ease: 'power2.inOut' }, 0.2)
@@ -86,7 +87,7 @@ export default function Home() {
             id: 'treatment-hold',
             trigger: '#tratamentos',
             start: 'top top',
-            end: () => `+=${Math.min(420, window.innerHeight * 0.35)}`,
+            end: () => `+=${Math.min(320, window.innerHeight * 0.25)}`,
             pin: true,
             pinSpacing: true,
             anticipatePin: 0,
@@ -94,18 +95,18 @@ export default function Home() {
           });
           gsap.timeline({
             defaults: { ease: 'power2.out' },
-            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 90%', end: 'top top', scrub: 0.65, invalidateOnRefresh: true },
+            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 90%', end: 'top top', scrub: true, invalidateOnRefresh: true },
           })
-            .fromTo('.treatment-intro', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.26 }, 0)
-            .fromTo('.treatment-word', { yPercent: 85, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.48, stagger: 0.025, ease: 'power3.out' }, 0.04)
-            .fromTo('.treatment-intro>p, .treatment-intro>.treatment-button', { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.035 }, 0.16)
-            .fromTo('.treatment-features .treatment-reveal', { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.075 }, 0.23)
-            .fromTo('.treatment-summary', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.33 }, 0.63)
-            .fromTo('.care-steps li', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.23, stagger: 0.06 }, 0.7);
+            .fromTo('.treatment-intro>.section-label', { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.28 }, 0)
+            .fromTo('.treatment-word', { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.42, stagger: 0.02, ease: 'power3.out' }, 0.02)
+            .fromTo('.treatment-intro>p:not(.section-label), .treatment-intro>.treatment-button', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.04 }, 0.14)
+            .fromTo('.treatment-features .treatment-reveal', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.42, stagger: 0.055 }, 0.14)
+            .fromTo('.treatment-summary', { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 0.54)
+            .fromTo('.care-steps li', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.23, stagger: 0.045 }, 0.64);
         });
         media.add('(max-width: 899px)', () => {
-          gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
-          gsap.to('.scene-watermark-layer', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.8 } });
+          gsap.to('.portrait-scroll', { y: -35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.2 } });
+          gsap.to('.scene-watermark-layer', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.25 } });
           gsap.from('.help-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#cuidado', start: 'top 82%', toggleActions: 'play none none reverse' } });
           gsap.from('.about-reveal', { y: 30, opacity: 0, duration: 0.6, stagger: 0.12, scrollTrigger: { trigger: '#sobre', start: 'top 82%', toggleActions: 'play none none reverse' } });
           root.current.querySelectorAll('.treatment-row').forEach(row => {
@@ -113,11 +114,11 @@ export default function Home() {
           });
           gsap.from('.treatment-word', { yPercent: 115, autoAlpha: 0, duration: 0.7, stagger: 0.055, ease: 'power3.out', scrollTrigger: { trigger: '.treatment-row-top', start: 'top 85%', toggleActions: 'play none none reverse' } });
         });
-        gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+        gsap.fromTo('.treatment-atmosphere', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#tratamentos', start: 'top bottom', end: 'bottom top', scrub: true } });
         media.add('(min-width: 900px) and (min-height: 760px)', () => {
           gsap.fromTo('.closing-backdrop', { yPercent: -8, scale: 1.05 }, {
             yPercent: 0, scale: 1, ease: 'none',
-            scrollTrigger: { id: 'closing-reveal', trigger: '.patient-section', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, scrub: 0.7, invalidateOnRefresh: true },
+            scrollTrigger: { id: 'closing-reveal', trigger: '.patient-section', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, scrub: true, invalidateOnRefresh: true },
           });
         });
       });
@@ -133,7 +134,7 @@ export default function Home() {
       event.preventDefault();
       window.history.replaceState(null, '', chapter === 'help' ? '#cuidado' : '#sobre');
       const progress = transition.animation.labels[chapter] / transition.animation.duration();
-      window.scrollTo({ top: transition.start + (transition.end - transition.start) * progress, behavior: 'smooth' });
+      scrollToPosition(transition.start + (transition.end - transition.start) * progress);
     }
   };
   const goToHelp = (event) => goToScene(event, 'help');
@@ -147,7 +148,7 @@ export default function Home() {
     if (transition) {
       event.preventDefault();
       window.history.replaceState(null, '', treatment ? '#tratamentos' : '#contato');
-      window.scrollTo({ top: treatment ? transition.start + 1 : transition.end, behavior: 'smooth' });
+      scrollToPosition(treatment ? transition.start + 1 : transition.end);
     }
   };
   return <main ref={root} onClick={handleSectionNavigation}>

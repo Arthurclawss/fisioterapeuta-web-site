@@ -1,5 +1,7 @@
 import './globals.css';
 import './closing.css';
+import 'lenis/dist/lenis.css';
+import SmoothScroll from './components/SmoothScroll';
 
 export const metadata = {
   title: 'Rudy Mollick | Liberdade para se movimentar',
@@ -7,5 +9,5 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return <html lang="pt-BR"><body>{children}</body></html>;
+  return <html lang="pt-BR"><body><SmoothScroll />{children}</body></html>;
 }

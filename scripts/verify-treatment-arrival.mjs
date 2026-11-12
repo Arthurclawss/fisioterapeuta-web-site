@@ -10,11 +10,11 @@ try {
   await page.waitForTimeout(1400);
   await page.mouse.move(720, 450);
   await page.mouse.wheel(0, 120);
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(1100);
   assert.ok(await page.evaluate(() => scrollY < 500), 'Wheel outside transition must keep native scrolling');
   await page.evaluate(() => window.scrollTo({ top: 2500, behavior: 'instant' }));
   await page.waitForTimeout(1300);
-  assert.equal(await page.locator('.treatment-intro').evaluate(el => getComputedStyle(el).visibility), 'hidden');
+  assert.equal(await page.locator('.treatment-word').first().evaluate(el => getComputedStyle(el).visibility), 'hidden');
   await page.mouse.wheel(0, 120);
   await page.waitForTimeout(800);
   assert.ok(await page.evaluate(() => scrollY >= 2600 && scrollY < 2700), 'Wheel must stay native without pulling section to top');
@@ -38,7 +38,7 @@ try {
   assert.ok(Number(await page.locator('.treatment-summary').evaluate(el => getComputedStyle(el).opacity)) > 0.99);
   await page.screenshot({ path: 'artifacts/treatment-fluid-complete.png' });
   await page.mouse.wheel(0, 430);
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1100);
   assert.ok(await page.evaluate(() => scrollY > 3900), 'Wheel must remain native after arrival');
   await page.evaluate(() => window.scrollTo({ top: 3000, behavior: 'instant' }));
   await page.waitForTimeout(1000);
