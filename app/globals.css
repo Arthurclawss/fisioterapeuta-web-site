@@ -38,7 +38,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--cyan); outline-
 .help-panel .text-link svg, .about-panel .text-link svg { color:var(--cyan); flex-shrink:0; }
 @media (min-width:900px) {
   .help-panel, .about-panel { isolation:isolate; }
-  .help-panel::before, .about-panel::before { content:""; position:absolute; z-index:-1; inset:-35px -40px -30px -55px; pointer-events:none; background:radial-gradient(ellipse at 55% 55%,#07171fa6 0%,#07171f80 50%,transparent 78%); }
+}
+.scene-reading-shade { display:none; }
+@media (min-width:900px) and (prefers-reduced-motion:no-preference) {
+  .scene-reading-shade { display:block; position:absolute; z-index:11; top:14%; bottom:8%; left:51%; width:44%; opacity:0; pointer-events:none; background:radial-gradient(ellipse at 55% 55%,#07171fa6 0%,#07171f80 50%,transparent 78%); }
 }
 @media (min-width:900px) and (max-width:1100px) {
   .help-panel, .about-panel { top:15%; left:54%; width:40%; }
@@ -115,7 +118,7 @@ h2 em { color: var(--cyan); font-weight: 400; }
   .motion-ready .care-steps li { opacity:0; }
   .motion-ready .treatment-features .treatment-reveal,
   .motion-ready .treatment-word,
-  .motion-ready .treatment-summary { backface-visibility:hidden; will-change:transform,opacity; }
+  .motion-ready .treatment-summary { will-change:transform,opacity; }
 }
 .treatment-content { position:relative; z-index:1; max-width:1600px; margin-inline:auto; }
 .treatment-atmosphere { position:absolute; inset:-15% 0; z-index:0; opacity:.6; pointer-events:none; background:radial-gradient(ellipse at 57% 23%,#1e596951,transparent 44%),linear-gradient(180deg,#07171f00 15%,#06141b 85%); }

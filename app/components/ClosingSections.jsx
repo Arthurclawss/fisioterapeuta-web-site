@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { contact, faqs, testimonials } from '../data/site-content';
@@ -20,11 +20,28 @@ export default function ClosingSections() {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
   const dialog = useRef(null);
+  const patientContent = useRef(null);
+  const layoutHeight = useRef(0);
+  const refreshFrame = useRef(0);
   const reduced = useReducedMotion();
   const address = encodeURIComponent(contact.address);
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${address}`;
   const quote = testimonials[quoteIndex];
-  const refresh = () => ScrollTrigger.refresh();
+  useLayoutEffect(() => {
+    layoutHeight.current = patientContent.current?.offsetHeight ?? 0;
+    return () => cancelAnimationFrame(refreshFrame.current);
+  }, []);
+  const refresh = () => {
+    cancelAnimationFrame(refreshFrame.current);
+    refreshFrame.current = requestAnimationFrame(() => {
+      const height = patientContent.current?.offsetHeight ?? 0;
+      if (height === layoutHeight.current) return;
+      layoutHeight.current = height;
+      // Only remeasure when content actually changes height, after scrolling
+      // settles. A completed opacity tween must not reset every scene.
+      ScrollTrigger.refresh(true);
+    });
+  };
   const whatsapp = () => {
     if (contact.whatsapp) window.open(`https://wa.me/${contact.whatsapp}`, '_blank', 'noopener,noreferrer');
     else dialog.current?.showModal();
@@ -34,7 +51,7 @@ export default function ClosingSections() {
     <div className="patient-stage">
     <section id="depoimentos" className="patient-section" aria-labelledby="patient-title">
       <div className="patient-grain" aria-hidden="true" />
-      <div className="patient-content">
+      <div className="patient-content" ref={patientContent}>
         <p className="section-label patient-kicker">05 — EXPERIÊNCIAS E DÚVIDAS</p>
         <div className="patient-grid">
           <div className="testimonial-column">
@@ -85,12 +102,12 @@ export default function ClosingSections() {
               <span className="contact-phone">WhatsApp · {contact.whatsappLabel}</span>
             </div>
             <div className="contact-location">
-              <div className="map-frame">
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="map-frame" aria-label="Abrir localização do consultório no Google Maps">
                 <picture>
                   <source media="(max-width:899px)" srcSet="/images/location-map-mobile.png" />
                   <Image src="/images/location-map.png" alt="Mapa do Google com a localização do atendimento na Rua Walter Duarte Pereira, 1620, Capim Macio, Natal" width={2200} height={1000} className="map-static-image" sizes="(max-width:899px) 86vw, 43vw" />
                 </picture>
-              </div>
+              </a>
               <div className="location-caption"><span>UM LUGAR PARA CUIDAR DE VOCÊ.</span><a href={mapsUrl} target="_blank" rel="noopener noreferrer">Traçar rota <Arrow /></a></div>
               <div className="contact-detail-grid">
                 <div><h3>ONDE ENCONTRAR</h3><address>{contact.address}</address></div>

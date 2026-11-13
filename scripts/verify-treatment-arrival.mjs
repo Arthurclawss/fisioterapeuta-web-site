@@ -40,6 +40,11 @@ try {
   await page.waitForTimeout(1000);
   assert.ok(await alpha() > 0.99);
   assert.ok(Number(await page.locator('.treatment-summary').evaluate(el => getComputedStyle(el).opacity)) > 0.99);
+  const lastStep = () => page.locator('.care-steps li').last().evaluate(el => Number(getComputedStyle(el).opacity));
+  assert.ok(await lastStep() > 0 && await lastStep() < 0.99, 'Slower entrance must continue visibly during the short hold');
+  await page.evaluate(() => window.scrollTo({ top: 3750, behavior: 'instant' }));
+  await page.waitForTimeout(1000);
+  assert.ok(await lastStep() > 0.99, 'All steps must finish before the section releases');
   await page.screenshot({ path: 'artifacts/treatment-fluid-complete.png' });
   await page.mouse.wheel(0, 430);
   await page.waitForTimeout(1100);
