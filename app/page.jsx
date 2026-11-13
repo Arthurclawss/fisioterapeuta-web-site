@@ -67,11 +67,11 @@ export default function Home() {
         // Flat text stays on a 2D transform path. Only the actual folding
         // pieces use 3D; nested 3D/hidden backfaces can blink on compositing.
         gsap.set(container.querySelectorAll('.split-text-word, .split-text-char, .help-reveal, .about-reveal, .treatment-reveal, .treatment-word, .treatment-summary, .patient-kicker, .patient-intro, .testimonial-card, .testimonial-note, .faq-list, .faq-contact'), { force3D: false });
-        gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .from('.hero-eyebrow', { y: 24, autoAlpha: 0, duration: 0.75 }, 0.1)
-          .fromTo('.hero-copy .fold-piece', foldFrom, { ...foldTo, duration: 0.95, stagger: 0.065 }, 0.15)
-          .from('.portrait-entrance', { y: 75, autoAlpha: 0, scale: 1.04, duration: 1.4 }, 0.2)
-          .from('.hero-description, .hero-actions, .hero-footer', { y: 22, autoAlpha: 0, stagger: 0.12, duration: 0.75 }, 0.7);
+        gsap.timeline({ defaults: { ease: 'power2.out' } })
+          .from('.hero-eyebrow', { y: 14, autoAlpha: 0, duration: 1.1 }, 0.15)
+          .fromTo('.hero-copy .fold-piece', foldFrom, { ...foldTo, duration: 1.35, stagger: 0.1 }, 0.2)
+          .from('.portrait-entrance', { y: 36, autoAlpha: 0, scale: 1.015, duration: 2.0 }, 0.25)
+          .from('.hero-description, .hero-actions, .hero-footer', { y: 14, autoAlpha: 0, stagger: 0.16, duration: 1.1 }, 0.85);
 
         media.add('(min-width: 900px)', () => {
           const portrait = root.current.querySelector('.portrait-scroll');
