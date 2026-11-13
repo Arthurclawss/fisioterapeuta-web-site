@@ -19,7 +19,8 @@ export default function SmoothScroll() {
       teardown = () => {};
       if (preference.matches) return;
       const lenis = new Lenis({
-        lerp: 0.12,
+        lerp: 0.085,
+        wheelMultiplier: 0.92,
         smoothWheel: true,
         syncTouch: false,
         autoRaf: false,

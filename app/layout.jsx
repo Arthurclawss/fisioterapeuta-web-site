@@ -9,5 +9,12 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return <html lang="pt-BR"><body><SmoothScroll />{children}</body></html>;
+  return (
+    <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('has-js');" }} />
+      </head>
+      <body><SmoothScroll />{children}</body>
+    </html>
+  );
 }

@@ -67,15 +67,17 @@ export default function Home() {
         // Flat text stays on a 2D transform path. Only the actual folding
         // pieces use 3D; nested 3D/hidden backfaces can blink on compositing.
         gsap.set(container.querySelectorAll('.split-text-word, .split-text-char, .help-reveal, .about-reveal, .treatment-reveal, .treatment-word, .treatment-summary, .patient-kicker, .patient-intro, .testimonial-card, .testimonial-note, .faq-list, .faq-contact'), { force3D: false });
-        gsap.timeline({ defaults: { ease: 'power2.out' } })
-          .from('.hero-eyebrow', { y: 14, autoAlpha: 0, duration: 1.1 }, 0.15)
-          .fromTo('.hero-copy .fold-piece', foldFrom, { ...foldTo, duration: 1.35, stagger: 0.1 }, 0.2)
-          .from('.portrait-entrance', { y: 36, autoAlpha: 0, scale: 1.015, duration: 2.0 }, 0.25)
-          .from('.hero-description, .hero-actions, .hero-footer', { y: 14, autoAlpha: 0, stagger: 0.16, duration: 1.1 }, 0.85);
+        gsap.set(container.querySelectorAll('.hero-eyebrow, .hero-copy .fold-piece, .portrait-entrance, .portrait-caption, .hero-description, .hero-actions, .hero-footer'), { force3D: true });
+        gsap.timeline({ defaults: { ease: 'expo.out' } })
+          .fromTo('.hero-eyebrow', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2 }, 0.06)
+          .fromTo('.hero-copy .fold-piece', { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.45, stagger: 0.065 }, 0.12)
+          .fromTo('.portrait-entrance', { y: 36, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.85 }, 0.14)
+          .fromTo('.portrait-caption', { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.15, ease: 'power3.out' }, 0.72)
+          .fromTo('.hero-description, .hero-actions, .hero-footer', { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.14, duration: 1.15, ease: 'power3.out' }, 0.6);
 
         media.add('(min-width: 900px)', () => {
           const portrait = root.current.querySelector('.portrait-scroll');
-          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: 0.22, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
+          const scroll = gsap.timeline({ scrollTrigger: { id: 'hero-transition', trigger: '.hero-stage', start: 'top top', end: '+=400%', scrub: 0.45, pin: '.hero-scene', anticipatePin: 1, invalidateOnRefresh: true } });
           scroll.to('.hero-copy', { y: -28, autoAlpha: 0, duration: 0.32, ease: 'sine.inOut' }, 0)
             .to('.portrait-caption, .hero-footer', { autoAlpha: 0, y: -12, duration: 0.28, ease: 'sine.inOut' }, 0)
             .to(portrait, { x: () => window.innerWidth * 0.025 - portrait.offsetLeft, scale: 0.88, transformOrigin: 'left bottom', force3D: true, duration: 0.79, ease: 'sine.inOut' }, 0.06)
@@ -112,7 +114,7 @@ export default function Home() {
             defaults: { ease: 'power2.out' },
             // Let the entrance finish during the existing brief pin, giving
             // each group more scroll distance without restarting its state.
-            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 65%', end: 'top -15%', scrub: 0.22 },
+            scrollTrigger: { id: 'treatment-entrance', trigger: '#tratamentos', start: 'top 65%', end: 'top -15%', scrub: 0.45 },
           })
             .fromTo('.treatment-intro>.section-label', { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.28 }, 0)
             .fromTo('.treatment-word', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.02)
