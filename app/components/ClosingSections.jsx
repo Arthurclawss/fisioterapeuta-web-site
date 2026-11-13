@@ -96,7 +96,7 @@ export default function ClosingSections() {
           <p className="section-label">06 — LOCALIZAÇÃO E AGENDAMENTO</p>
           <div className="contact-main-grid">
             <div className="contact-intro">
-              <h2 id="contact-title">Seu próximo<br />movimento<br /><em><FoldText text="começa aqui." /></em></h2>
+              <h2 id="contact-title"><FoldText text="Seu próximo" /><br /><FoldText text="movimento" /><br /><em><FoldText text="começa aqui." /></em></h2>
               <p>Uma conversa para entender você.<br />Um primeiro passo para o seu cuidado.</p>
               <button type="button" className="primary-button contact-whatsapp" onClick={whatsapp}>Conversar pelo WhatsApp <span><Arrow /></span></button>
               <span className="contact-phone">WhatsApp · {contact.whatsappLabel}</span>

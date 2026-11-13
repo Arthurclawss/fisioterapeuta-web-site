@@ -151,7 +151,7 @@ export default function Home() {
           });
           gsap.timeline({
             defaults: { ease: 'power2.out' },
-            scrollTrigger: { id: 'patient-entrance', trigger: '.patient-stage', start: 'top 95%', end: 'top 25%', scrub: 0.12 },
+            scrollTrigger: { id: 'patient-entrance', trigger: '.patient-stage', start: 'top 70%', end: 'top 8%', scrub: 0.25 },
           })
             .fromTo('.patient-kicker, .patient-intro', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.045 }, 0)
             .fromTo('.testimonial-card, .testimonial-note', { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.04 }, 0.12)
@@ -167,16 +167,16 @@ export default function Home() {
           ScrollTrigger.create({
             id: 'closing-reveal', trigger: '.patient-stage', start: 'bottom bottom', end: '+=100%', pin: '.closing-scene', pinSpacing: false, anticipatePin: 1, invalidateOnRefresh: true,
           });
-          gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 0.65, stagger: 0.08, scrollTrigger: { trigger: '.patient-stage', start: 'bottom 35%', end: 'bottom top', scrub: 0.18 } });
+          gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 1.1, stagger: 0.14, ease: 'power2.out', scrollTrigger: { trigger: '.patient-stage', start: 'bottom 65%', end: 'bottom top', scrub: 0.85 } });
         });
         media.add('(max-width: 899px), (max-height: 759px)', () => {
           for (const heading of [text.patients, text.faq]) {
-            gsap.fromTo(heading.words, { yPercent: 35, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, stagger: 0.045, scrollTrigger: { trigger: heading.elements[0], start: 'top 85%', once: true } });
+            gsap.fromTo(heading.words, { yPercent: 35, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.65, delay: 0.15, stagger: 0.045, scrollTrigger: { trigger: heading.elements[0], start: 'top 75%', once: true } });
           }
           for (const heading of ['#patient-title', '.faq-column h2']) {
-            gsap.fromTo(`${heading} .fold-piece`, foldFrom, { ...foldTo, duration: 0.9, stagger: 0.09, scrollTrigger: { trigger: heading, start: 'top 80%', once: true } });
+            gsap.fromTo(`${heading} .fold-piece`, foldFrom, { ...foldTo, duration: 0.9, delay: 0.2, stagger: 0.09, scrollTrigger: { trigger: heading, start: 'top 72%', once: true } });
           }
-          gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 0.8, stagger: 0.08, scrollTrigger: { trigger: '#contact-title', start: 'top 85%', once: true } });
+          gsap.fromTo('.contact-intro .fold-piece', foldFrom, { ...foldTo, duration: 1.25, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: '#contact-title', start: 'top 80%', once: true } });
         });
         return () => text.revert();
       });
